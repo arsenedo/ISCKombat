@@ -59,7 +59,6 @@ class ResearchHello(width: Int, height: Int) extends PortableApplication(width, 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     g.clear()
 
-    println("RENDERING GRAPHICS")
     dt += Gdx.graphics.getDeltaTime
 
     // Do we have to display the next frame// Do we have to display the next frame
