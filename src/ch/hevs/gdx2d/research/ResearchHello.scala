@@ -25,12 +25,17 @@ class ResearchHello(width: Int, height: Int) extends PortableApplication(width, 
   var nFramesWalk = 9
   var nFramesIdle = 7
   var FRAME_TIME = 0.07
+
+  val colliderX = 500
+  val colliderY = 0
+  val colliderWidth = 200
+  val colliderHeight = 200
+
   var direction: Int = 1
   override def onInit(): Unit = {
     setTitle("Research Time")
     spritesheetIdle = new Spritesheet("data/images/Idle.png", 152, 268)
     spritesheetWalk = new Spritesheet("data/images/Walk.png", 174, 272)
-    println("INIT DONE")
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -68,11 +73,18 @@ class ResearchHello(width: Int, height: Int) extends PortableApplication(width, 
 
       Update()
     }
-
     val activeSprite = if (isMoving) spritesheetWalk else spritesheetIdle
+
+    // Collision example
+    val isColliding: Boolean = rectPosition.x + activeSprite.sprites(0)(currentFrame).getRegionWidth >= colliderX && rectPosition.x <= colliderX + colliderWidth
+    g.drawFilledRectangle(colliderX + colliderWidth / 2, colliderY + colliderHeight / 2, colliderWidth, colliderHeight, 0, if (isColliding) Color.RED else Color.GREEN)
+
+    // Hitbox example
     g.drawFilledRectangle(rectPosition.x + activeSprite.sprites(0)(currentFrame).getRegionWidth / 2, rectPosition.y + activeSprite.sprites(0)(currentFrame).getRegionHeight / 2, activeSprite.sprites(0)(currentFrame).getRegionWidth, activeSprite.sprites(0)(currentFrame).getRegionHeight, 0, Color.LIME)
 
+    // Spritesheet example
     g.draw(activeSprite.sprites(0)(currentFrame), rectPosition.x, rectPosition.y)
+
     g.drawFPS()
   }
 }
