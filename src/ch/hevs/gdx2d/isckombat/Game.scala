@@ -13,12 +13,15 @@ object Game {
 
 class Game extends PortableApplication(1600, 900){
   private var player1: Character = _
+  private var player2: Character = _
   override def onInit(): Unit = {
-    player1 = new Scorpion(new Vector2(0,0))
+    player1 = new Scorpion(new Vector2(50,100))
+    player2 = new MichaelJackson(new Vector2(getWindowWidth - 200, 100))
   }
 
   def update(): Unit = {
     player1.update()
+    player2.update()
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
@@ -27,6 +30,8 @@ class Game extends PortableApplication(1600, 900){
     g.clear()
 
     player1.drawSprite(g)
+
+    player2.drawSprite(g)
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -34,6 +39,8 @@ class Game extends PortableApplication(1600, 900){
     // TODO DECIDE ON AN ACTION BUFFERING STRATEGY
     println(keycode)
     player1.handleKeyDown(keycode)
+
+    player2.handleKeyDown(keycode)
   }
 
   override def onKeyUp(keycode: Int): Unit = {
@@ -41,5 +48,7 @@ class Game extends PortableApplication(1600, 900){
     // TODO DECIDE ON AN ACTION BUFFERING STRATEGY
     println(keycode)
     player1.handleKeyUp(keycode)
+
+    player2.handleKeyUp(keycode)
   }
 }
