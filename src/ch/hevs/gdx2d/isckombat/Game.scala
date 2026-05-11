@@ -13,6 +13,8 @@ object Game {
 }
 
 class Game extends PortableApplication(1600, 900){
+  val DEBUG_MODE: Boolean = true
+
   private var player1: Character = _
   private var player2: Character = _
 
@@ -53,6 +55,10 @@ class Game extends PortableApplication(1600, 900){
     player1.drawSprite(g)
 
     player2.drawSprite(g)
+
+    if (DEBUG_MODE) {
+      drawDebugBoxes(g)
+    }
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -83,5 +89,10 @@ class Game extends PortableApplication(1600, 900){
     } else if (player2Inputs.contains(keycode)) {
       player2.handleKeyUp(keycode)
     }
+  }
+
+  private def drawDebugBoxes(g: GdxGraphics): Unit = {
+    player1.drawDebugBox(g)
+    player2.drawDebugBox(g)
   }
 }

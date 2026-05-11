@@ -3,6 +3,7 @@ package ch.hevs.gdx2d.isckombat.character
 import ch.hevs.gdx2d.isckombat.sprites.{SpriteConfig, SpritesLoader}
 import ch.hevs.gdx2d.isckombat.state.{IdleState, State}
 import ch.hevs.gdx2d.lib.GdxGraphics
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 
@@ -52,14 +53,26 @@ abstract class Character(val position: Vector2) {
     g.draw(getCurrentSpriteFrame, position.x, position.y)
   }
 
+  def drawDebugBox(g: GdxGraphics): Unit = {
+    g.setColor(Color.LIME)
+
+    g.drawRectangle(
+      position.x + getCurrentSpriteFrame.getRegionWidth / 2,
+      position.y + getCurrentSpriteFrame.getRegionHeight / 2,
+      getCurrentSpriteFrame.getRegionWidth,
+      getCurrentSpriteFrame.getRegionHeight,
+      0
+    )
+  }
+
   def getSpritesLoader: SpritesLoader
 
   def getCurrentFrame: Int = currentFrame
 
   def getCurrentSpriteConfig: SpriteConfig = currentSprite
 
-  //! Flipping sprites is not perfect
-  // A better solution would be to create flipped sprites and use them based of the current distance to the enemy (positive or negative)
+  //! Flipping sprites is not perfect. The image is flipped, but the direction of the resizing still happends to the right.
+  // Need to find a better solution
   private def flipSprites(enemyPos: Vector2): Unit = {
     // IF ENEMY ON RIGHT (dist < 0), FLIPPED = FALSE
     // IF ENEMY ON LEFT (dist > 0), FLIPPED = TRUE
