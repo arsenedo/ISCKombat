@@ -41,8 +41,8 @@ class Game extends PortableApplication(1600, 900){
   }
 
   def update(): Unit = {
-    player1.update()
-    player2.update()
+    player1.update(player2.position)
+    player2.update(player1.position)
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {

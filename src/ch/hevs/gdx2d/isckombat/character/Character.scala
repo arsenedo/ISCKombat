@@ -3,6 +3,7 @@ package ch.hevs.gdx2d.isckombat.character
 import ch.hevs.gdx2d.isckombat.sprites.{SpriteConfig, SpritesLoader}
 import ch.hevs.gdx2d.isckombat.state.{IdleState, State}
 import ch.hevs.gdx2d.lib.GdxGraphics
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 
 abstract class Character(val position: Vector2) {
@@ -27,10 +28,16 @@ abstract class Character(val position: Vector2) {
     state = newState
   }
 
-  def update(): Unit = {
+  def update(enemyPos: Vector2): Unit = {
     currentTick += 1
 
+    if (currentTick % currentSprite.ticksPerFrame == 0) {
+      currentFrame += 1
+    }
+
     state.update(this)
+
+    flipSprites(enemyPos)
   }
 
   def handleKeyDown(keycode: Int): Unit = {
@@ -42,11 +49,7 @@ abstract class Character(val position: Vector2) {
   }
 
   def drawSprite(g: GdxGraphics): Unit = {
-    if (currentTick % currentSprite.ticksPerFrame == 0) {
-      currentFrame += 1
-    }
-
-    g.draw(currentSprite.spritesheet.sprites(0)(currentFrame % currentSprite.nFrames), position.x, position.y)
+    g.draw(getCurrentSpriteFrame, position.x, position.y)
   }
 
   def getSpritesLoader: SpritesLoader
@@ -55,7 +58,26 @@ abstract class Character(val position: Vector2) {
 
   def getCurrentSpriteConfig: SpriteConfig = currentSprite
 
+  //! Flipping sprites is not perfect
+  // A better solution would be to create flipped sprites and use them based of the current distance to the enemy (positive or negative)
+  private def flipSprites(enemyPos: Vector2): Unit = {
+    // IF ENEMY ON RIGHT (dist < 0), FLIPPED = FALSE
+    // IF ENEMY ON LEFT (dist > 0), FLIPPED = TRUE
+    val dist: Float = position.x - enemyPos.x
+
+    if (
+      (dist < 0 && getCurrentSpriteFrame.isFlipX)
+      || (dist > 0 && !getCurrentSpriteFrame.isFlipX)
+    ) {
+      getCurrentSpriteFrame.flip(true, false)
+    }
+  }
+
   private def loadSpritesheets(): Unit = {
     getSpritesLoader.loadSpritesheets()
+  }
+
+  private def getCurrentSpriteFrame: TextureRegion = {
+    currentSprite.spritesheet.sprites(0)(currentFrame % currentSprite.nFrames)
   }
 }
