@@ -1,6 +1,7 @@
 package ch.hevs.gdx2d.isckombat.sprites
 
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
+import scala.collection.immutable.HashMap
 
 object ScorpionSpritesLoader extends SpritesLoader {
   private var spritesLoaded = false
@@ -17,7 +18,7 @@ object ScorpionSpritesLoader extends SpritesLoader {
     idleSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/idle.png", 213, 375),
       7,
-      6
+      6,
     )
 
     walkSpritesheet = SpriteConfig(
@@ -29,6 +30,13 @@ object ScorpionSpritesLoader extends SpritesLoader {
     punchSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/punch.png", 330, 386),
       6,
+      6,
+      Some(HashMap(2->SpriteActions.ATTACK_TOP, 5->SpriteActions.ATTACK_TOP))
+    )
+
+    hitSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/hit.png", 238, 380),
+      3,
       6
     )
 

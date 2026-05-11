@@ -18,11 +18,17 @@ class IdleState() extends State {
   }
 
   override def handleKeyDown(keycode: Int, c: character.Character): Unit = {
-    if (keycode == Input.Keys.D || keycode == Input.Keys.A) {
+    if (
+      (keycode == Input.Keys.D || keycode == Input.Keys.A)
+      || (keycode == Input.Keys.RIGHT || keycode == Input.Keys.LEFT)
+    ) {
       c.updateState(new WalkState(keycode))
     }
 
-    if (keycode == Input.Keys.U) {
+    if (
+      (keycode == Input.Keys.U)
+      || (keycode == Input.Keys.NUMPAD_4)
+    ) {
       c.updateState(new PunchState)
     }
   }
