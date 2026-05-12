@@ -50,15 +50,17 @@ abstract class Character(val position: Vector2) {
   }
 
   def drawSprite(g: GdxGraphics): Unit = {
-    g.draw(getCurrentSpriteFrame, position.x, position.y)
+    val flipAdjustedPos = getFlipAdjustedPosition
+    g.draw(getCurrentSpriteFrame, flipAdjustedPos.x, flipAdjustedPos.y)
   }
 
   def drawDebugBox(g: GdxGraphics): Unit = {
+    val flipAdjustedPos = getFlipAdjustedPosition
     g.setColor(Color.LIME)
 
     g.drawRectangle(
-      position.x + getCurrentSpriteFrame.getRegionWidth / 2,
-      position.y + getCurrentSpriteFrame.getRegionHeight / 2,
+      flipAdjustedPos.x + getCurrentSpriteFrame.getRegionWidth / 2,
+      flipAdjustedPos.y + getCurrentSpriteFrame.getRegionHeight / 2,
       getCurrentSpriteFrame.getRegionWidth,
       getCurrentSpriteFrame.getRegionHeight,
       0
@@ -71,8 +73,19 @@ abstract class Character(val position: Vector2) {
 
   def getCurrentSpriteConfig: SpriteConfig = currentSprite
 
-  //! Flipping sprites is not perfect. The image is flipped, but the direction of the resizing still happends to the right.
-  // Need to find a better solution
+  private def getFlipAdjustedPosition: Vector2 = {
+    if (!getCurrentSpriteFrame.isFlipX) {
+      return position
+    }
+
+    val idleFrameWidth: Int = getSpritesLoader.getIdleSpritesheet.spritesheet.sprites(0)(0).getRegionWidth
+    val currentSpriteFrameWidth: Int = getCurrentSpriteFrame.getRegionWidth
+
+    val dx = currentSpriteFrameWidth - idleFrameWidth
+
+    new Vector2(position.x - dx, position.y)
+  }
+
   private def flipSprites(enemyPos: Vector2): Unit = {
     // IF ENEMY ON RIGHT (dist < 0), FLIPPED = FALSE
     // IF ENEMY ON LEFT (dist > 0), FLIPPED = TRUE
