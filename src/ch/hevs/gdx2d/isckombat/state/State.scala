@@ -1,11 +1,11 @@
 package ch.hevs.gdx2d.isckombat.state
 
-import ch.hevs.gdx2d.isckombat.character
+import ch.hevs.gdx2d.isckombat.entity
 
 trait State {
-  def enter(c: character.Character): Unit
-  def update(c: character.Character): Unit
-  def exit(c: character.Character): Unit
-  def handleKeyDown(keycode: Int, c: character.Character): Unit
-  def handleKeyUp(keycode: Int, c: character.Character): Unit
+  def enter(c: entity.Entity): Unit
+  def update(c: entity.Entity): Unit
+  def exit(c: entity.Entity): Unit
+  def handleKeyDown(keycode: Int, c: entity.Entity): Unit
+  def handleKeyUp(keycode: Int, c: entity.Entity): Unit
 }

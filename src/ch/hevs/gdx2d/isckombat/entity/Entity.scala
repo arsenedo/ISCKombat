@@ -1,4 +1,4 @@
-package ch.hevs.gdx2d.isckombat.character
+package ch.hevs.gdx2d.isckombat.entity
 
 import ch.hevs.gdx2d.isckombat.sprites.{SpriteConfig, SpritesLoader}
 import ch.hevs.gdx2d.isckombat.state.{IdleState, State}
@@ -6,17 +6,16 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
-import ch.hevs.gdx2d.isckombat.sprites.SpriteActions
 
-abstract class Character(val position: Vector2) {
+abstract class Entity(val id: Int, val position: Vector2) {
   loadSpritesheets()
 
   private var health: Int = 1000
-  private var hitbox: Option[Hitbox] = None
   private var currentFrame = 0
   private var currentTick = 0
   private var currentSprite: SpriteConfig = _
   private var state: State = new IdleState
+  private val hitboxManager: HitboxManager = new HitboxManager(id, () => {getFlipAdjustedPosition})
   state.enter(this)
 
   def updateSpritesheet(newSpritesheet: SpriteConfig): Unit = {
@@ -27,8 +26,10 @@ abstract class Character(val position: Vector2) {
 
   def updateState(newState: State) = {
     state.exit(this)
+    hitboxManager.clearHitboxesMap()
 
     newState.enter(this)
+    hitboxManager.updateHitboxesMap(getCurrentSpriteConfig)
 
     state = newState
   }
@@ -53,27 +54,6 @@ abstract class Character(val position: Vector2) {
     state.handleKeyUp(keycode, this)
   }
 
-  def activateHitbox(action: SpriteActions.Action): Unit = {
-    val currentSpriteFrame = getCurrentSpriteFrame
-
-    val hitboxOffset: Vector2 = {
-      action match {
-        case SpriteActions.ATTACK_TOP => new Vector2(0, currentSpriteFrame.getRegionHeight.toFloat * (2f/3f))
-        case SpriteActions.ATTACK_MID => new Vector2(0, currentSpriteFrame.getRegionHeight.toFloat * (1f/3f))
-        case SpriteActions.ATTACK_BOTTOM => new Vector2(0, 0)
-        case _ => new Vector2(0, 0)
-      }
-    }
-
-    hitboxOffset.add(getFlipAdjustedPosition)
-
-    hitbox = Option(Hitbox(hitboxOffset, currentSpriteFrame.getRegionWidth, (currentSpriteFrame.getRegionHeight.toFloat * (1f/3f)).toInt))
-  }
-
-  def deactivateHitbox(): Unit = {
-    hitbox = None
-  }
-
   def drawSprite(g: GdxGraphics): Unit = {
     val flipAdjustedPos = getFlipAdjustedPosition
     g.draw(getCurrentSpriteFrame, flipAdjustedPos.x, flipAdjustedPos.y)
@@ -91,21 +71,24 @@ abstract class Character(val position: Vector2) {
       0
     )
 
-    if (hitbox.isDefined) {
-      val hb = hitbox.get
-      val pos = hb.position
+    val hbOption = getHitboxAtCurrentFrame
+    if (hbOption.isDefined) {
+      val hitbox = hbOption.get
+      val pos = hitbox.position
       g.setColor(Color.RED)
       g.drawRectangle(
-        pos.x + hb.width / 2,
-        pos.y + hb.height / 2,
-        hb.width,
-        hb.height,
+        pos.x + hitbox.width / 2,
+        pos.y + hitbox.height / 2,
+        hitbox.width,
+        hitbox.height,
         0
       )
     }
   }
 
-  def getHitbox: Option[Hitbox] = hitbox
+  def getHitboxAtCurrentFrame: Option[Hitbox] = {
+    hitboxManager.getHitboxAtFrame(currentFrame)
+  }
 
   def getSpritesLoader: SpritesLoader
 
@@ -113,9 +96,9 @@ abstract class Character(val position: Vector2) {
 
   def getCurrentSpriteConfig: SpriteConfig = currentSprite
 
-  def getFlipAdjustedPosition: Vector2 = {
+  private def getFlipAdjustedPosition: Vector2 = {
     if (!getCurrentSpriteFrame.isFlipX) {
-      return position
+      return new Vector2(position.x, position.y)
     }
 
     val idleFrameWidth: Int = getSpritesLoader.getIdleSpritesheet.spritesheet.sprites(0)(0).getRegionWidth
@@ -136,6 +119,7 @@ abstract class Character(val position: Vector2) {
 
   def applyDamage(damage: Int): Unit = {
     health -= damage
+    println(health)
   }
 
   private def flipSprites(enemyPos: Vector2): Unit = {
@@ -143,12 +127,7 @@ abstract class Character(val position: Vector2) {
     // IF ENEMY ON LEFT (dist > 0), FLIPPED = TRUE
     val dist: Float = position.x - enemyPos.x
 
-    if (
-      (dist < 0 && getCurrentSpriteFrame.isFlipX)
-      || (dist > 0 && !getCurrentSpriteFrame.isFlipX)
-    ) {
-      getCurrentSpriteFrame.flip(true, false)
-    }
+    getSpritesLoader.setAllSpritesFlipState(dist > 0)
   }
 
   private def loadSpritesheets(): Unit = {

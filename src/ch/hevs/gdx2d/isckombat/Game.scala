@@ -1,11 +1,16 @@
 package ch.hevs.gdx2d.isckombat
 
 import ch.hevs.gdx2d.desktop.PortableApplication
-import ch.hevs.gdx2d.isckombat.character.{Character, MichaelJackson, Scorpion}
+import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Scorpion}
+import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
+import ch.hevs.gdx2d.isckombat.registers.EntityRegister
 import ch.hevs.gdx2d.isckombat.state.HitState
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
+
+import scala.collection.mutable
 
 object Game {
   def main(args: Array[String]): Unit = {
@@ -13,11 +18,11 @@ object Game {
   }
 }
 
-class Game extends PortableApplication(1600, 900){
+class Game extends PortableApplication(1920, 1080){
   val DEBUG_MODE: Boolean = true
 
-  private var player1: Character = _
-  private var player2: Character = _
+  private var player1: Entity = _
+  private var player2: Entity = _
 
   private val player1Inputs: Array[Int] = Array(
     Input.Keys.W,
@@ -39,15 +44,18 @@ class Game extends PortableApplication(1600, 900){
     Input.Keys.NUMPAD_6
   )
   override def onInit(): Unit = {
-    player1 = new Scorpion(new Vector2(50,100))
-    player2 = new MichaelJackson(new Vector2(getWindowWidth - 200, 100))
+    player1 = new Scorpion(0, new Vector2(50,100))
+    player2 = new MichaelJackson(1, new Vector2(200, 100))
+
+    EntityRegister.addEntity(player1)
+    EntityRegister.addEntity(player2)
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     onLogicUpdate()
 
     g.clear()
-
+    g.drawFPS(Color.RED)
     player1.drawSprite(g)
 
     player2.drawSprite(g)
@@ -58,11 +66,23 @@ class Game extends PortableApplication(1600, 900){
   }
 
   private def onLogicUpdate(): Unit = {
-    player1.update(player2.position)
-    player2.update(player1.position)
+    simulationPhase()
 
-    performAttacks(player1, player2)
-    performAttacks(player2, player1)
+    detectAndApplyCollisions()
+  }
+
+  private def simulationPhase(): Unit = {
+   player1.update(player2.position)
+   player2.update(player1.position)
+  }
+
+  private def detectAndApplyCollisions(): Unit = {
+    val detectedCollisions: mutable.HashMap[Hitbox, Entity] = CollisionHandler.detectCollisions(Array(player1, player2))
+
+    detectedCollisions.foreachEntry((hitbox, target) => {
+      target.updateState(new HitState(50))
+      hitbox.isActive = false
+    })
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -98,18 +118,5 @@ class Game extends PortableApplication(1600, 900){
   private def drawDebugBoxes(g: GdxGraphics): Unit = {
     player1.drawDebugBoxes(g)
     player2.drawDebugBoxes(g)
-  }
-
-  private def performAttacks(attacker: Character, attacked: Character): Unit = {
-    val attackerHitboxOption = attacker.getHitbox
-    if (attackerHitboxOption.isDefined) {
-      val hitbox = attacker.getHitbox.get
-      val attackedPosition = attacked.getFlipAdjustedPosition
-      val attackedSprite = attacked.getCurrentSpriteFrame
-
-      if (hitbox.isCollidingWith(attackedPosition, attackedSprite.getRegionWidth, attackedSprite.getRegionHeight)) {
-        attacked.updateState(new HitState(50))
-      }
-    }
   }
 }
