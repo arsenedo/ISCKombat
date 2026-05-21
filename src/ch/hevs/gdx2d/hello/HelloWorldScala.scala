@@ -1,10 +1,17 @@
 package ch.hevs.gdx2d.hello
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.{Interpolation, Vector2}
+import ch.hevs.gdx2d.components.physics.primitives.{PhysicsBox, PhysicsCircle, PhysicsPolygon, PhysicsStaticBox}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
+import ch.hevs.gdx2d.components.graphics.GeomUtils
+import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
+import ch.hevs.gdx2d.desktop.physics.DebugRenderer
+import ch.hevs.gdx2d.lib.physics.PhysicsWorld
+import com.badlogic.gdx.physics.box2d.World
+
 
 
 /**
@@ -20,64 +27,43 @@ object HelloWorldScala {
   }
 }
 
-class HelloWorldScala extends PortableApplication {
-  private var imgBitmap: BitmapImage = null
+class HelloWorldScala extends PortableApplication(1920,1080) {
+  private var world: World = _
+  private var p1: PhysicsBox = _
+  private var debugRenderer: DebugRenderer = _
 
   override def onInit(): Unit = {
-    setTitle("Hello World - mui 2024")
+    setTitle("Simple physics simulation, mui 2013")
 
-    // Load a custom image (or from the lib "res/lib/icon64.png")
-    imgBitmap = new BitmapImage("data/images/ISC_logo.png")
+    world = PhysicsWorld.getInstance()
+
+
+    val w = getWindowWidth
+    val h = getWindowHeight
+
+    // Build the walls around the screen
+    new PhysicsScreenBoundaries(w.toFloat, h.toFloat)
+
+    // The slope on which the objects roll
+    new PhysicsStaticBox("slope", new Vector2(w / 2f, h / 2f), (w / 3f * 2f), 16f, math.Pi.toFloat / 12.0f)
+
+
+    // Build the dominoes
+    p1 = new PhysicsBox("player", new Vector2(60f, 120f), 50f, 150f)
+
+
+
+    debugRenderer = new DebugRenderer()
   }
 
-  /**
-   * Some animation related variables
-   */
-  private var direction: Int = 1
-  private var currentTime: Float = 0
-  final private val ANIMATION_LENGTH: Float = 2f // Animation length (in seconds)
-  final private val MIN_ANGLE: Float = -20
-  final private val MAX_ANGLE: Float = 20
-
-  /**
-   * This method is called periodically by the engine
-   *
-   * @param g
-   */
   override def onGraphicRender(g: GdxGraphics): Unit = {
-    // Clears the screen
     g.clear()
-    // Compute the angle of the image using an elastic interpolation
-    val t = computePercentage
-    val angle: Float = Interpolation.sine.apply(MIN_ANGLE, MAX_ANGLE, t)
 
-    // Draw everything
-    g.drawTransformedPicture(getWindowWidth / 2.0f, getWindowHeight / 2.0f, angle, 0.7f, imgBitmap)
-    g.drawStringCentered(getWindowHeight * 0.8f, "Welcome to gdx2d !")
+    p1.setBodyLinearVelocity(1f,0.5f)
+    debugRenderer.render(world, g.getCamera.combined)
+    PhysicsWorld.updatePhysics(Gdx.graphics.getRawDeltaTime)
+
+    g.drawSchoolLogoUpperRight()
     g.drawFPS()
-    g.drawSchoolLogo()
-  }
-
-  /**
-   * Compute time percentage for making a looping animation
-   *
-   * @return the current normalized time
-   */
-  private def computePercentage: Float = {
-    if (direction == 1) {
-      currentTime += Gdx.graphics.getDeltaTime
-      if (currentTime > ANIMATION_LENGTH) {
-        currentTime = ANIMATION_LENGTH
-        direction *= -1
-      }
-    }
-    else {
-      currentTime -= Gdx.graphics.getDeltaTime
-      if (currentTime < 0) {
-        currentTime = 0
-        direction *= -1
-      }
-    }
-    currentTime / ANIMATION_LENGTH
   }
 }

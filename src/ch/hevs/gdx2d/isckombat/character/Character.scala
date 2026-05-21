@@ -8,9 +8,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import ch.hevs.gdx2d.isckombat.sprites.SpriteActions
 
+import scala.collection.mutable.ArrayBuffer
+
 abstract class Character(val position: Vector2) {
   loadSpritesheets()
 
+
+  private var inputs = new ArrayBuffer[Int]()
   private var health: Int = 1000
   private var hitbox: Option[Hitbox] = None
   private var currentFrame = 0
