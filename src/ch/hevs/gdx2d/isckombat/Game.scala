@@ -4,7 +4,7 @@ import ch.hevs.gdx2d.desktop.PortableApplication
 import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Scorpion}
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
-import ch.hevs.gdx2d.isckombat.state.HitState
+import ch.hevs.gdx2d.isckombat.state.{HitState, KnockoutState, VictoryState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
@@ -23,6 +23,7 @@ class Game extends PortableApplication(1920, 1080){
 
   private var player1: Entity = _
   private var player2: Entity = _
+  private var gameEnded: Boolean = false
 
   private val player1Inputs: Array[Int] = Array(
     Input.Keys.W,
@@ -45,7 +46,7 @@ class Game extends PortableApplication(1920, 1080){
   )
   override def onInit(): Unit = {
     player1 = new Scorpion(0, new Vector2(50,100))
-    player2 = new MichaelJackson(1, new Vector2(200, 100))
+    player2 = new MichaelJackson(1, new Vector2(getWindowWidth - 200, 100))
 
     EntityRegister.addEntity(player1)
     EntityRegister.addEntity(player2)
@@ -69,6 +70,8 @@ class Game extends PortableApplication(1920, 1080){
     simulationPhase()
 
     detectAndApplyCollisions()
+
+    detectGameEnd()
   }
 
   private def simulationPhase(): Unit = {
@@ -83,6 +86,19 @@ class Game extends PortableApplication(1920, 1080){
       target.updateState(new HitState(50))
       hitbox.isActive = false
     })
+  }
+
+  private def detectGameEnd(): Unit = {
+    if (gameEnded) return
+    if (player1.getHealth <= 0) {
+      player1.updateState(new KnockoutState())
+      player2.updateState(new VictoryState())
+      gameEnded = true
+    } else if (player2.getHealth <= 0) {
+      player2.updateState(new KnockoutState())
+      player1.updateState(new VictoryState())
+      gameEnded = true
+    }
   }
 
   override def onKeyDown(keycode: Int): Unit = {

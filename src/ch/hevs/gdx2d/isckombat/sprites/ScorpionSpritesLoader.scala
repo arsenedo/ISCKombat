@@ -40,6 +40,18 @@ object ScorpionSpritesLoader extends SpritesLoader {
       6
     )
 
+    knockoutSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/knockout.png", 360, 370),
+      5,
+      6
+    )
+
+    victorySpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/victory.png", 187, 420),
+      4,
+      5
+    )
+
     spritesLoaded = true
   }
 }
