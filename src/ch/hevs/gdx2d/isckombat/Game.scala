@@ -1,8 +1,9 @@
 package ch.hevs.gdx2d.isckombat
 
 import ch.hevs.gdx2d.desktop.PortableApplication
-import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Scorpion}
+import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Player, Scorpion}
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
+import ch.hevs.gdx2d.isckombat.entity.inputs.InputConfigs
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
 import ch.hevs.gdx2d.isckombat.state.{HitState, KnockoutState, VictoryState}
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -21,32 +22,16 @@ object Game {
 class Game extends PortableApplication(1920, 1080){
   private val DEBUG_MODE: Boolean = true
 
-  private var player1: Entity = _
-  private var player2: Entity = _
+  private var player1: Player = _
+  private var player2: Player = _
   private var gameEnded: Boolean = false
 
-  private val player1Inputs: Array[Int] = Array(
-    Input.Keys.W,
-    Input.Keys.A,
-    Input.Keys.S,
-    Input.Keys.D,
-    Input.Keys.U,
-    Input.Keys.I,
-    Input.Keys.O
-  )
-
-  private val player2Inputs: Array[Int] = Array(
-    Input.Keys.UP,
-    Input.Keys.LEFT,
-    Input.Keys.DOWN,
-    Input.Keys.RIGHT,
-    Input.Keys.NUMPAD_4,
-    Input.Keys.NUMPAD_5,
-    Input.Keys.NUMPAD_6
-  )
   override def onInit(): Unit = {
     player1 = new Scorpion(0, new Vector2(50,100))
     player2 = new MichaelJackson(1, new Vector2(getWindowWidth - 200, 100))
+
+    player1.setInputs(InputConfigs.getPlayer1InputMap)
+    player2.setInputs(InputConfigs.getPlayer2InputMap)
 
     EntityRegister.addEntity(player1)
     EntityRegister.addEntity(player2)
@@ -83,7 +68,7 @@ class Game extends PortableApplication(1920, 1080){
     val detectedCollisions: mutable.HashMap[Hitbox, Entity] = CollisionHandler.detectCollisions(Array(player1, player2))
 
     detectedCollisions.foreachEntry((hitbox, target) => {
-      target.updateState(new HitState(50))
+      target.asInstanceOf[Player].updateState(new HitState(50))
       hitbox.isActive = false
     })
   }
@@ -102,33 +87,21 @@ class Game extends PortableApplication(1920, 1080){
   }
 
   override def onKeyDown(keycode: Int): Unit = {
-    // TODO MAP KEYCODES TO ACTIONS BEFORE PASSING THEM TO THE PLAYERS
-    // TODO DECIDE ON AN ACTION BUFFERING STRATEGY
-    println(keycode)
     handleKeyDown(keycode)
   }
 
   override def onKeyUp(keycode: Int): Unit = {
-    // TODO MAP KEYCODES TO ACTIONS BEFORE PASSING THEM TO THE PLAYERS
-    // TODO DECIDE ON AN ACTION BUFFERING STRATEGY
-    println(keycode)
     handleKeyUp(keycode)
   }
 
   private def handleKeyDown(keycode: Int): Unit = {
-    if (player1Inputs.contains(keycode)) {
-      player1.handleKeyDown(keycode)
-    } else if (player2Inputs.contains(keycode)) {
-      player2.handleKeyDown(keycode)
-    }
+    player1.handleKeyDown(keycode)
+    player2.handleKeyDown(keycode)
   }
 
   private def handleKeyUp(keycode: Int): Unit = {
-    if (player1Inputs.contains(keycode)) {
-      player1.handleKeyUp(keycode)
-    } else if (player2Inputs.contains(keycode)) {
-      player2.handleKeyUp(keycode)
-    }
+    player1.handleKeyUp(keycode)
+    player2.handleKeyUp(keycode)
   }
 
   private def drawDebugBoxes(g: GdxGraphics): Unit = {

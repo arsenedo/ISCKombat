@@ -1,38 +1,34 @@
 package ch.hevs.gdx2d.isckombat.state
 
-import ch.hevs.gdx2d.isckombat.entity
-import com.badlogic.gdx.Input
+import ch.hevs.gdx2d.isckombat.entity.Player
+import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions
+import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions.InputAction
 
-class IdleState() extends State {
+class IdleState() extends State[Player] {
 
-  override def enter(c: entity.Entity): Unit = {
+  override def enter(c: Player): Unit = {
     c.updateSpritesheet(c.getSpritesLoader.getIdleSpritesheet)
   }
 
-  override def update(c: entity.Entity): Unit = {
+  override def update(c: Player): Unit = {
+    if (c.isToggled(InputActions.MOVE_LEFT) || c.isToggled(InputActions.MOVE_RIGHT)) {
+      val toggled: InputAction = if (c.isToggled(InputActions.MOVE_LEFT)) InputActions.MOVE_LEFT else InputActions.MOVE_RIGHT
 
-  }
-
-  override def exit(c: entity.Entity): Unit = {
-
-  }
-
-  override def handleKeyDown(keycode: Int, c: entity.Entity): Unit = {
-    if (
-      (keycode == Input.Keys.D || keycode == Input.Keys.A)
-      || (keycode == Input.Keys.RIGHT || keycode == Input.Keys.LEFT)
-    ) {
-      c.updateState(new WalkState(keycode))
+      c.updateState(new WalkState(toggled))
     }
 
-    if (
-      (keycode == Input.Keys.U)
-      || (keycode == Input.Keys.NUMPAD_4)
-    ) {
-      c.updateState(new PunchState)
+    // TODO THINK SOMETHING ABOUT CODE DUPLICATES
+    // maybe the state should define the list of available commands on enter?
+    val latestCommandOption = c.getLatestCommand
+    if (latestCommandOption.isEmpty) return
+    val latestCommand = latestCommandOption.get
+    if (latestCommand.action == InputActions.PUNCH && !latestCommand.isExecuted) {
+      c.updateState(new PunchState())
+      latestCommand.isExecuted = true
     }
+
   }
 
-  override def handleKeyUp(keycode: Int, c: entity.Entity): Unit = {
+  override def exit(c: Player): Unit = {
   }
 }

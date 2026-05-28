@@ -1,20 +1,16 @@
 package ch.hevs.gdx2d.isckombat.state
 
-import ch.hevs.gdx2d.isckombat.entity.Entity
+import ch.hevs.gdx2d.isckombat.entity.{Entity, Player}
 import ch.hevs.gdx2d.lib.GdxGraphics
 
-class KnockoutState extends State {
-  override def enter(c: Entity): Unit = {
+class KnockoutState extends State[Player] {
+  override def enter(c: Player): Unit = {
     c.updateSpritesheet(c.getSpritesLoader.getKnockoutSpritesheet)
   }
 
-  override def update(c: Entity): Unit = {}
+  override def update(c: Player): Unit = {}
 
-  override def exit(c: Entity): Unit = {}
-
-  override def handleKeyDown(keycode: Int, c: Entity): Unit = {}
-
-  override def handleKeyUp(keycode: Int, c: Entity): Unit = {}
+  override def exit(c: Player): Unit = {}
 
   override def drawSprite(g: GdxGraphics, c: Entity): Unit = {
     val lastFrame: Int = c.getCurrentSpriteConfig.nFrames - 1

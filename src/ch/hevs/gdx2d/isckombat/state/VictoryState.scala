@@ -1,27 +1,19 @@
 package ch.hevs.gdx2d.isckombat.state
 
-import ch.hevs.gdx2d.isckombat.entity.Entity
+import ch.hevs.gdx2d.isckombat.entity.{Entity, Player}
 import ch.hevs.gdx2d.lib.GdxGraphics
 
-class VictoryState extends State {
+class VictoryState extends State[Player] {
 
-  override def enter(c: Entity): Unit = {
+  override def enter(c: Player): Unit = {
     c.updateSpritesheet(c.getSpritesLoader.getVictorySpritesheet)
   }
 
-  override def update(c: Entity): Unit = {
+  override def update(c: Player): Unit = {
 
   }
 
-  override def exit(c: Entity): Unit = {
-
-  }
-
-  override def handleKeyDown(keycode: Int, c: Entity): Unit = {
-
-  }
-
-  override def handleKeyUp(keycode: Int, c: Entity): Unit = {
+  override def exit(c: Player): Unit = {
 
   }
 

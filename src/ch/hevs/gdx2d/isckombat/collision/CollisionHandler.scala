@@ -1,7 +1,7 @@
 package ch.hevs.gdx2d.isckombat.collision
 
 import ch.hevs.gdx2d.isckombat.entity
-import ch.hevs.gdx2d.isckombat.entity.Hitbox
+import ch.hevs.gdx2d.isckombat.entity.{Hitbox, Player}
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
@@ -25,7 +25,8 @@ object CollisionHandler {
     detectedCollisions
   }
 
+  // TODO CREATE A TRAIT FOR COLLIDABLES
   private def getHitboxes: mutable.Set[Hitbox] = {
-    EntityRegister.entities.filter(entity => entity.getHitboxAtCurrentFrame.isDefined).map(entity => entity.getHitboxAtCurrentFrame.get)
+    EntityRegister.entities.filter(entity => entity.asInstanceOf[Player].getHitboxAtCurrentFrame.isDefined).map(entity => entity.asInstanceOf[Player].getHitboxAtCurrentFrame.get)
   }
 }
