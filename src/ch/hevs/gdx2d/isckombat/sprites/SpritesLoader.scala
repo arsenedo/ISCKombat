@@ -7,6 +7,8 @@ trait SpritesLoader {
   protected var walkSpritesheet: SpriteConfig = _
   protected var punchSpritesheet: SpriteConfig = _
   protected var hitSpritesheet: SpriteConfig = _
+  protected var knockoutSpritesheet: SpriteConfig = _
+  protected var victorySpritesheet: SpriteConfig = _
 
   def spritesheetsPath: String = "data/images/spritesheets/"
 
@@ -15,13 +17,17 @@ trait SpritesLoader {
   def getWalkSpritesheet: SpriteConfig = walkSpritesheet
   def getPunchSpritesheet: SpriteConfig = punchSpritesheet
   def getHitSpritesheet: SpriteConfig = hitSpritesheet
+  def getKnockoutSpritesheet: SpriteConfig = knockoutSpritesheet
+  def getVictorySpritesheet: SpriteConfig = victorySpritesheet
+
 
   def setAllSpritesFlipState(isFlipped: Boolean): Unit = {
     val spritesheets: Array[SpriteConfig] = Array(
       getIdleSpritesheet,
       getWalkSpritesheet,
       getPunchSpritesheet,
-      getHitSpritesheet
+      getHitSpritesheet,
+      getKnockoutSpritesheet
     )
 
     for (spriteConf <- spritesheets) {

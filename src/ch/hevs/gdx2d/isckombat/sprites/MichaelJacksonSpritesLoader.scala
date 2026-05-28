@@ -3,9 +3,12 @@ package ch.hevs.gdx2d.isckombat.sprites
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
 
 import scala.collection.immutable.HashMap
+import scala.util.Random
 
 object MichaelJacksonSpritesLoader extends SpritesLoader {
   private var spritesLoaded = false
+
+  private var victorySpritesheetArray: Array[SpriteConfig] = Array.empty
 
   override def spritesheetsPath: String = {
     super.spritesheetsPath + "characters/mj"
@@ -41,6 +44,31 @@ object MichaelJacksonSpritesLoader extends SpritesLoader {
       6
     )
 
+    knockoutSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/knockout.png", 412, 373),
+      5,
+      6
+    )
+
+    victorySpritesheetArray = Array(
+      SpriteConfig(
+        new Spritesheet(s"$spritesheetsPath/victory1.png", 275, 373),
+        24,
+        10
+      ),
+      SpriteConfig(
+        new Spritesheet(s"$spritesheetsPath/victory2.png", 402, 373),
+        31,
+        10
+      )
+    )
+
     spritesLoaded = true
+  }
+
+  override def getVictorySpritesheet: SpriteConfig = {
+    victorySpritesheet = victorySpritesheetArray(Random.between(0, victorySpritesheetArray.length))
+
+    super.getVictorySpritesheet
   }
 }

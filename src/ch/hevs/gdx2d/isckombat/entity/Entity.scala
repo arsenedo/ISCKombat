@@ -55,8 +55,7 @@ abstract class Entity(val id: Int, val position: Vector2) {
   }
 
   def drawSprite(g: GdxGraphics): Unit = {
-    val flipAdjustedPos = getFlipAdjustedPosition
-    g.draw(getCurrentSpriteFrame, flipAdjustedPos.x, flipAdjustedPos.y)
+    state.drawSprite(g, this)
   }
 
   def drawDebugBoxes(g: GdxGraphics): Unit = {
@@ -96,7 +95,7 @@ abstract class Entity(val id: Int, val position: Vector2) {
 
   def getCurrentSpriteConfig: SpriteConfig = currentSprite
 
-  private def getFlipAdjustedPosition: Vector2 = {
+  def getFlipAdjustedPosition: Vector2 = {
     if (!getCurrentSpriteFrame.isFlipX) {
       return new Vector2(position.x, position.y)
     }
