@@ -17,15 +17,10 @@ class IdleState() extends State[Player] {
       c.updateState(new WalkState(toggled))
     }
 
-    // TODO THINK SOMETHING ABOUT CODE DUPLICATES
-    // maybe the state should define the list of available commands on enter?
-    val latestCommandOption = c.getLatestCommand
-    if (latestCommandOption.isEmpty) return
-    val latestCommand = latestCommandOption.get
-    if (latestCommand.action == InputActions.PUNCH && !latestCommand.isExecuted) {
-      c.updateState(new PunchState())
-      latestCommand.isExecuted = true
-    }
+    c.tryExecuteLastCommand(
+      InputActions.PUNCH,
+      () => c.updateState(new PunchState())
+    )
 
   }
 

@@ -32,8 +32,16 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
     flipSprites(enemyPos)
   }
 
-  def getLatestCommand: Option[InputCommand] = {
-    inputsHandler.getHistory.lastOption
+  def tryExecuteLastCommand(inputAction: InputAction, onSuccess: () => Unit): Boolean = {
+    val latestCommandOption = inputsHandler.getHistory.lastOption
+    if (latestCommandOption.isEmpty) return false
+    val latestCommand = latestCommandOption.get
+    if (latestCommand.isActive && latestCommand.action == inputAction) {
+      onSuccess()
+      return true
+    }
+
+    false
   }
 
   def isToggled(action: InputAction): Boolean = {

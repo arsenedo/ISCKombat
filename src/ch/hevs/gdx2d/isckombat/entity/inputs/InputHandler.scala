@@ -50,7 +50,7 @@ class InputHandler {
   }
 
   private def addCommandToHistory(cmd : InputAction): Unit = {
-    cmdHistory.enqueue(InputCommand(cmd, isExecuted = false))
+    cmdHistory.enqueue(InputCommand(cmd))
     if (cmdHistory.length > QUEUE_MAX_LENGTH) {
       cmdHistory.dequeue
 

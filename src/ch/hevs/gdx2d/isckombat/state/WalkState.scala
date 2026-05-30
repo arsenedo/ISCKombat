@@ -20,13 +20,10 @@ class WalkState(private var executorAction: InputAction) extends State[Player] {
 
     c.position.add(translationVector.x * direction, translationVector.y)
 
-    val latestCommandOption = c.getLatestCommand
-    if (latestCommandOption.isEmpty) return
-    val latestCommand = latestCommandOption.get
-    if (latestCommand.action == InputActions.PUNCH && !latestCommand.isExecuted) {
-      c.updateState(new PunchState())
-      latestCommand.isExecuted = true
-    }
+    c.tryExecuteLastCommand(
+      InputActions.PUNCH,
+      () => c.updateState(new PunchState())
+    )
   }
 
   override def exit(c: Player): Unit = {

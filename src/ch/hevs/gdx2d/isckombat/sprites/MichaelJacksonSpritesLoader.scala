@@ -54,12 +54,12 @@ object MichaelJacksonSpritesLoader extends SpritesLoader {
       SpriteConfig(
         new Spritesheet(s"$spritesheetsPath/victory1.png", 275, 373),
         24,
-        10
+        12
       ),
       SpriteConfig(
         new Spritesheet(s"$spritesheetsPath/victory2.png", 402, 373),
         31,
-        10
+        12
       )
     )
 
