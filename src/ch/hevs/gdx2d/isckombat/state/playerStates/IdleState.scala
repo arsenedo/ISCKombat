@@ -24,6 +24,13 @@ class IdleState() extends PlayerState {
     }
 
     if (c.tryExecuteLastCommand(
+      InputActions.CROUCH,
+      () => c.updateState(new CrouchState())
+    )) {
+      return
+    }
+
+    if (c.tryExecuteLastCommand(
       InputActions.PUNCH,
       () => c.updateState(new PunchState())
     )) {

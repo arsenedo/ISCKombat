@@ -75,6 +75,19 @@ object MichaelJacksonSpritesLoader extends SpritesLoader {
       )
     )
 
+    crouchSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/crouch.png", 154, 330),
+      2,
+      3
+    )
+
+    crouchKickSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/crouch_punch.png", 216, 210),
+      3,
+      10,
+      Some(HashMap(2->SpriteActions.ATTACK_TOP))
+    )
+
     spritesLoaded = true
   }
 

@@ -11,7 +11,8 @@ class InputHandler {
     InputActions.MOVE_LEFT -> false,
     InputActions.MOVE_RIGHT -> false,
     InputActions.JUMP -> false,
-    InputActions.BLOCK -> false
+    InputActions.BLOCK -> false,
+    InputActions.CROUCH -> false
   )
 
   def setInputs(inputsMap: mutable.HashMap[Int, InputAction]): Unit = {

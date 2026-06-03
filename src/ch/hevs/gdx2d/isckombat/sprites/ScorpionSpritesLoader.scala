@@ -64,6 +64,18 @@ object ScorpionSpritesLoader extends SpritesLoader {
       5
     )
 
+    crouchSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/crouch.png", 195, 330),
+      3,
+      2
+    )
+
+    crouchKickSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/crouch_kICK.png", 260, 270),
+      4,
+      6
+    )
+
     spritesLoaded = true
   }
 }

@@ -11,6 +11,8 @@ trait SpritesLoader {
   protected var directionalJump: SpriteConfig = _
   protected var fallingSpritesheet: SpriteConfig = _
   protected var victorySpritesheet: SpriteConfig = _
+  protected var crouchSpritesheet: SpriteConfig = _
+  protected var crouchKickSpritesheet: SpriteConfig = _
 
   def spritesheetsPath: String = "data/images/spritesheets/"
 
@@ -23,6 +25,8 @@ trait SpritesLoader {
   def getDirectionalJumpSpritesheet: SpriteConfig = directionalJump
   def getFallingSpritesheet: SpriteConfig = fallingSpritesheet
   def getVictorySpritesheet: SpriteConfig = victorySpritesheet
+  def getCrouchSpritesheet: SpriteConfig = crouchSpritesheet
+  def getCrouchkickSpritesheet: SpriteConfig = crouchKickSpritesheet
 
 
   def setAllSpritesFlipState(isFlipped: Boolean): Unit = {
@@ -32,7 +36,9 @@ trait SpritesLoader {
       getPunchSpritesheet,
       getHitSpritesheet,
       getJumpSpritesheet,
-      getFallingSpritesheet
+      getFallingSpritesheet,
+      getCrouchSpritesheet,
+      getCrouchkickSpritesheet
     )
 
     for (spriteConf <- spritesheets) {
