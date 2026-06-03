@@ -29,6 +29,12 @@ class IdleState() extends PlayerState {
     )) {
       return
     }
+    if (c.tryExecuteLastCommand(
+      InputActions.BLOCK,
+      () => c.updateState(new BlockState())
+    )) {
+      return
+    }
 
     if (c.tryExecuteLastCommand(
       InputActions.PUNCH,

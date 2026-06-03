@@ -16,6 +16,8 @@ object InputConfigs {
     Input.Keys.S -> InputActions.CROUCH,
     Input.Keys.D -> InputActions.MOVE_RIGHT,
     Input.Keys.U -> InputActions.PUNCH,
+    Input.Keys.I -> InputActions.BLOCK
+
   )
 
   private val player2Inputs: mutable.HashMap[Int, InputActions.InputAction] = mutable.HashMap(
@@ -24,6 +26,7 @@ object InputConfigs {
     Input.Keys.DOWN -> InputActions.CROUCH,
     Input.Keys.RIGHT -> InputActions.MOVE_RIGHT,
     Input.Keys.NUMPAD_4 -> InputActions.PUNCH,
+    Input.Keys.NUMPAD_5 -> InputActions.BLOCK
   )
   def getPlayer1InputMap :mutable.HashMap[Int, InputActions.InputAction] = {
     player1Inputs

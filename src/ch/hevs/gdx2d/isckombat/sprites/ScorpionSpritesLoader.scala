@@ -76,6 +76,17 @@ object ScorpionSpritesLoader extends SpritesLoader {
       6
     )
 
+    blockSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/block.png", 198, 380),
+      3,
+      3
+    )
+    crouchBlockSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/crouch_Block.png", 162, 250),
+      1,
+      1
+    )
+
     spritesLoaded = true
   }
 }

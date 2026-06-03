@@ -88,6 +88,18 @@ object MichaelJacksonSpritesLoader extends SpritesLoader {
       Some(HashMap(2->SpriteActions.ATTACK_TOP))
     )
 
+    blockSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/block.png", 165, 375),
+      6,
+      2
+    )
+
+    crouchBlockSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/crouch_block.png", 168, 220),
+      1,
+      1
+    )
+
     spritesLoaded = true
   }
 
