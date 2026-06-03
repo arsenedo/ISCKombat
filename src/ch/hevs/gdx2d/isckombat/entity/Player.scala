@@ -2,19 +2,20 @@ package ch.hevs.gdx2d.isckombat.entity
 
 import ch.hevs.gdx2d.isckombat.entity.inputs.{Controllable, InputCommand}
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions.InputAction
-import ch.hevs.gdx2d.isckombat.state.{IdleState, State}
+import ch.hevs.gdx2d.isckombat.state.State
+import ch.hevs.gdx2d.isckombat.state.playerStates.{IdleState, PlayerState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 
 abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, position: Vector2) with Controllable {
-  private var state: State[Player] = new IdleState
+  private var state: PlayerState = new IdleState
   private var health: Int = 1000
   private val hitboxManager: HitboxManager = new HitboxManager(id, () => {getFlipAdjustedPosition})
 
   state.enter(this)
 
-  def updateState(newState: State[Player]): Unit = {
+  def updateState(newState: PlayerState): Unit = {
     state.exit(this)
     hitboxManager.clearHitboxesMap()
 
@@ -59,6 +60,10 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
   def applyDamage(damage: Int): Unit = {
     health -= damage
     println(health)
+  }
+
+  def receiveDamage(damage: Int): Unit = {
+    state.receiveDamage(this, damage)
   }
 
   override def drawSprite(g: GdxGraphics): Unit = {

@@ -7,7 +7,9 @@ trait SpritesLoader {
   protected var walkSpritesheet: SpriteConfig = _
   protected var punchSpritesheet: SpriteConfig = _
   protected var hitSpritesheet: SpriteConfig = _
-  protected var knockoutSpritesheet: SpriteConfig = _
+  protected var jumpSpritesheet: SpriteConfig = _
+  protected var directionalJump: SpriteConfig = _
+  protected var fallingSpritesheet: SpriteConfig = _
   protected var victorySpritesheet: SpriteConfig = _
 
   def spritesheetsPath: String = "data/images/spritesheets/"
@@ -17,7 +19,9 @@ trait SpritesLoader {
   def getWalkSpritesheet: SpriteConfig = walkSpritesheet
   def getPunchSpritesheet: SpriteConfig = punchSpritesheet
   def getHitSpritesheet: SpriteConfig = hitSpritesheet
-  def getKnockoutSpritesheet: SpriteConfig = knockoutSpritesheet
+  def getJumpSpritesheet: SpriteConfig = jumpSpritesheet
+  def getDirectionalJumpSpritesheet: SpriteConfig = directionalJump
+  def getFallingSpritesheet: SpriteConfig = fallingSpritesheet
   def getVictorySpritesheet: SpriteConfig = victorySpritesheet
 
 
@@ -27,7 +31,8 @@ trait SpritesLoader {
       getWalkSpritesheet,
       getPunchSpritesheet,
       getHitSpritesheet,
-      getKnockoutSpritesheet
+      getJumpSpritesheet,
+      getFallingSpritesheet
     )
 
     for (spriteConf <- spritesheets) {
@@ -35,7 +40,7 @@ trait SpritesLoader {
     }
   }
 
-  private def setSpritesheetFlipState(spritesheet: Spritesheet, shouldBeFlipped: Boolean): Unit = {
+  def setSpritesheetFlipState(spritesheet: Spritesheet, shouldBeFlipped: Boolean): Unit = {
     for (row <- spritesheet.sprites) {
       for (sprite <- row) {
         if ((shouldBeFlipped && !sprite.isFlipX) || (!shouldBeFlipped && sprite.isFlipX)) {

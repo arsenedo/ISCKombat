@@ -1,10 +1,13 @@
-package ch.hevs.gdx2d.isckombat.state
+package ch.hevs.gdx2d.isckombat.state.playerStates
 
 import ch.hevs.gdx2d.isckombat.entity.Player
 
-class PunchState extends State[Player] {
+class HitState(damage: Int) extends PlayerState {
+
   override def enter(c: Player): Unit = {
-    c.updateSpritesheet(c.getSpritesLoader.getPunchSpritesheet)
+    c.updateSpritesheet(c.getSpritesLoader.getHitSpritesheet)
+
+    c.applyDamage(damage)
   }
 
   override def update(c: Player): Unit = {
@@ -13,6 +16,5 @@ class PunchState extends State[Player] {
     }
   }
 
-  override def exit(c: Player): Unit = {
-  }
+  override def exit(c: Player): Unit = {}
 }

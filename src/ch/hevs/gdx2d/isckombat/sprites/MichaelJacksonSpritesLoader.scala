@@ -38,13 +38,25 @@ object MichaelJacksonSpritesLoader extends SpritesLoader {
       Some(HashMap(2->SpriteActions.ATTACK_TOP))
     )
 
+    jumpSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/jump.png", 167, 350),
+      1,
+      1
+    )
+
+    directionalJump = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/directional_jump.png", 187, 350),
+      2,
+      10
+    )
+
     hitSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/hit.png", 193, 373),
       3,
       6
     )
 
-    knockoutSpritesheet = SpriteConfig(
+    fallingSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/knockout.png", 412, 373),
       5,
       6
