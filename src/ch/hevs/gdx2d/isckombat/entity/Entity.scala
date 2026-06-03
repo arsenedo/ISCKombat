@@ -49,6 +49,8 @@ abstract class Entity(val id: Int, val position: Vector2) {
 
   def getCurrentFrame: Int = currentFrame
 
+  def getCurrentTick: Int = currentTick
+
   def getCurrentSpriteConfig: SpriteConfig = currentSprite
 
   def getFlipAdjustedPosition: Vector2 = {

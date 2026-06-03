@@ -5,7 +5,7 @@ import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Player, S
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputConfigs
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
-import ch.hevs.gdx2d.isckombat.state.{HitState, KnockoutState, VictoryState}
+import ch.hevs.gdx2d.isckombat.state.playerStates.{HitState, KnockoutState, VictoryState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
@@ -68,7 +68,7 @@ class Game extends PortableApplication(1920, 1080){
     val detectedCollisions: mutable.HashMap[Hitbox, Entity] = CollisionHandler.detectCollisions(Array(player1, player2))
 
     detectedCollisions.foreachEntry((hitbox, target) => {
-      target.asInstanceOf[Player].updateState(new HitState(50))
+      target.asInstanceOf[Player].receiveDamage(50)
       hitbox.isActive = false
     })
   }

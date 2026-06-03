@@ -40,7 +40,19 @@ object ScorpionSpritesLoader extends SpritesLoader {
       6
     )
 
-    knockoutSpritesheet = SpriteConfig(
+    jumpSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/jump.png", 186, 275),
+      1,
+      1
+    )
+
+    directionalJump = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/directional_jump.png", 188, 200),
+      7,
+      5
+    )
+
+    fallingSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/knockout.png", 360, 370),
       5,
       6
