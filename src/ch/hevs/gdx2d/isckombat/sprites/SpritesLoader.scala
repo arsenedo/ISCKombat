@@ -13,10 +13,12 @@ trait SpritesLoader {
   protected var victorySpritesheet: SpriteConfig = _
   protected var crouchSpritesheet: SpriteConfig = _
   protected var crouchKickSpritesheet: SpriteConfig = _
+  protected var crouchHitSpritesheet: SpriteConfig = _
   protected var blockSpritesheet: SpriteConfig = _
   protected var crouchBlockSpritesheet: SpriteConfig = _
 
   def spritesheetsPath: String = "data/images/spritesheets/"
+  def soundsPath: String = "data/sounds/"
 
   def loadSpritesheets(): Unit
   def getIdleSpritesheet: SpriteConfig = idleSpritesheet
@@ -29,6 +31,7 @@ trait SpritesLoader {
   def getVictorySpritesheet: SpriteConfig = victorySpritesheet
   def getCrouchSpritesheet: SpriteConfig = crouchSpritesheet
   def getCrouchkickSpritesheet: SpriteConfig = crouchKickSpritesheet
+  def getCrouchHitSpritesheet: SpriteConfig = crouchHitSpritesheet
   def getBlockSpritesheet: SpriteConfig = blockSpritesheet
   def getCrouchBlockSpritesheet: SpriteConfig = crouchBlockSpritesheet
 
@@ -42,6 +45,8 @@ trait SpritesLoader {
       getJumpSpritesheet,
       getFallingSpritesheet,
       getCrouchSpritesheet,
+      getCrouchkickSpritesheet,
+      getCrouchHitSpritesheet,
       getCrouchkickSpritesheet,
       getBlockSpritesheet,
       getCrouchBlockSpritesheet

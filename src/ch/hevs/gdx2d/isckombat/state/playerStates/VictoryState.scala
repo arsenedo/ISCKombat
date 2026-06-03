@@ -7,6 +7,8 @@ class VictoryState extends PlayerState {
 
   override def enter(c: Player): Unit = {
     c.updateSpritesheet(c.getSpritesLoader.getVictorySpritesheet)
+
+    c.tryPlaySoundOnCurrentFrame()
   }
 
   override def update(c: Player): Unit = {

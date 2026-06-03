@@ -25,6 +25,12 @@ abstract class Entity(val id: Int, val position: Vector2) {
     if (currentTick % currentSprite.ticksPerFrame == 0) {
       currentFrame += 1
     }
+
+    val currentSpritesConfig: SpriteConfig = getCurrentSpriteConfig
+
+    if ((currentSpritesConfig.isOneShot) && (currentFrame >= currentSpritesConfig.nFrames - 1)) {
+      currentFrame = currentSpritesConfig.nFrames - 1
+    }
   }
 
   def drawSprite(g: GdxGraphics): Unit = {
@@ -32,18 +38,7 @@ abstract class Entity(val id: Int, val position: Vector2) {
     g.draw(this.getCurrentSpriteFrame, flipAdjustedPos.x, flipAdjustedPos.y)
   }
 
-  def drawDebugBoxes(g: GdxGraphics): Unit = {
-    val flipAdjustedPos = getFlipAdjustedPosition
-    g.setColor(Color.LIME)
-
-    g.drawRectangle(
-      flipAdjustedPos.x + getCurrentSpriteFrame.getRegionWidth / 2,
-      flipAdjustedPos.y + getCurrentSpriteFrame.getRegionHeight / 2,
-      getCurrentSpriteFrame.getRegionWidth,
-      getCurrentSpriteFrame.getRegionHeight,
-      0
-    )
-  }
+  def drawDebugBoxes(g: GdxGraphics): Unit = {}
 
   def getSpritesLoader: SpritesLoader
 

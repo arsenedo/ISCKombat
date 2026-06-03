@@ -1,8 +1,8 @@
-package ch.hevs.gdx2d.isckombat.state.playerStates
+package ch.hevs.gdx2d.isckombat.state.playerStates.Crouch
 
 import ch.hevs.gdx2d.isckombat.entity.Player
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions
-import ch.hevs.gdx2d.lib.GdxGraphics
+import ch.hevs.gdx2d.isckombat.state.playerStates.{IdleState, PlayerState}
 
 class CrouchState() extends PlayerState {
   override def enter(c: Player): Unit = {
@@ -31,14 +31,7 @@ class CrouchState() extends PlayerState {
 
   }
 
-
-  override def drawSprite(g: GdxGraphics, c: Player): Unit = {
-    val lastFrame: Int = c.getCurrentSpriteConfig.nFrames - 1
-    if (c.getCurrentFrame < lastFrame) {
-      super.drawSprite(g, c)
-    } else {
-      val flipAdjustedPos = c.getFlipAdjustedPosition
-      g.draw(c.getCurrentSpriteConfig.spritesheet.sprites(0)(lastFrame), flipAdjustedPos.x, flipAdjustedPos.y)
-    }
+  override def receiveDamage(player: Player, damage: Int): Unit = {
+    player.updateState(new CrouchHitState(damage))
   }
 }

@@ -1,8 +1,8 @@
-package ch.hevs.gdx2d.isckombat.state.playerStates
+package ch.hevs.gdx2d.isckombat.state.playerStates.Crouch
 
 import ch.hevs.gdx2d.isckombat.entity.Player
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions
-import ch.hevs.gdx2d.lib.GdxGraphics
+import ch.hevs.gdx2d.isckombat.state.playerStates.{BlockState, PlayerState}
 import com.badlogic.gdx.math.Vector2
 
 class CrouchBlockState extends PlayerState {

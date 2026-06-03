@@ -13,6 +13,8 @@ class AerialHitState(direction: Int, damage: Int) extends PlayerState {
 
     owner.applyDamage(damage)
 
+    owner.tryPlaySoundOnCurrentFrame()
+
     velocity.y = 25
   }
 

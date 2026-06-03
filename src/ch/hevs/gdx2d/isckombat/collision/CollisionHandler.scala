@@ -15,8 +15,7 @@ object CollisionHandler {
     val detectedCollisions: mutable.HashMap[Hitbox, entity.Entity] = mutable.HashMap.empty
     for (hitbox <- activeHitboxes) {
       for (player <- players) {
-        val spriteFrame: TextureRegion = player.getCurrentSpriteFrame
-        if ((player.id != hitbox.ownerId) && hitbox.isCollidingWith(player.position, spriteFrame.getRegionWidth, spriteFrame.getRegionHeight)) {
+        if ((player.id != hitbox.ownerId) && hitbox.isCollidingWith(player.position, player.getCurrentSpriteConfig.getHurtboxOnFrame(player.getCurrentFrame))) {
           detectedCollisions.addOne((hitbox, player))
         }
       }

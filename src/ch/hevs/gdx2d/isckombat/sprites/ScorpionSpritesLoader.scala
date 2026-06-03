@@ -1,6 +1,8 @@
 package ch.hevs.gdx2d.isckombat.sprites
 
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
+import ch.hevs.gdx2d.isckombat.entity.Hurtbox
+
 import scala.collection.immutable.HashMap
 
 object ScorpionSpritesLoader extends SpritesLoader {
@@ -67,19 +69,34 @@ object ScorpionSpritesLoader extends SpritesLoader {
     crouchSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/crouch.png", 195, 330),
       3,
-      2
+      2,
+      None,
+      hurtboxesOnFrames = Some(HashMap(
+        1 -> Hurtbox(195, 240, 0, 0),
+        2 -> Hurtbox(195, 185, 0, 0)
+      )),
+      isOneShot = true
     )
 
+
     crouchKickSpritesheet = SpriteConfig(
-      new Spritesheet(s"$spritesheetsPath/crouch_kICK.png", 260, 270),
+      new Spritesheet(s"$spritesheetsPath/crouch_kick.png", 340, 200),
       4,
+      6,
+      actionsOnFrames = Some(HashMap(3->SpriteActions.ATTACK_BOTTOM)),
+    )
+
+    crouchHitSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/crouch_hit.png", 231, 215),
+      3,
       6
     )
 
     blockSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/block.png", 198, 380),
       3,
-      3
+      3,
+      isOneShot = true
     )
     crouchBlockSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/crouch_Block.png", 162, 250),

@@ -7,6 +7,8 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 class KnockoutState extends PlayerState {
   override def enter(c: Player): Unit = {
     c.updateSpritesheet(c.getSpritesLoader.getFallingSpritesheet)
+
+    c.tryPlaySoundOnCurrentFrame()
   }
 
   override def update(c: Player): Unit = {}

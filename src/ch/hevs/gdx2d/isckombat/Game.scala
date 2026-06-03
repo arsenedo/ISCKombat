@@ -1,5 +1,6 @@
 package ch.hevs.gdx2d.isckombat
 
+import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.desktop.PortableApplication
 import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Player, Scorpion}
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
@@ -26,6 +27,8 @@ class Game extends PortableApplication(1920, 1080){
   private var player2: Player = _
   private var gameEnded: Boolean = false
 
+  private var background: BitmapImage = _
+
   override def onInit(): Unit = {
     player1 = new Scorpion(0, new Vector2(50,100))
     player2 = new MichaelJackson(1, new Vector2(getWindowWidth - 200, 100))
@@ -35,19 +38,23 @@ class Game extends PortableApplication(1920, 1080){
 
     EntityRegister.addEntity(player1)
     EntityRegister.addEntity(player2)
+
+    background = new BitmapImage("data/images/bg.jpg")
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     onLogicUpdate()
 
     g.clear()
-    g.drawFPS(Color.RED)
+
+    g.drawPicture(getWindowWidth/2, getWindowHeight/2 + 50, background)
     player1.drawSprite(g)
 
     player2.drawSprite(g)
 
     if (DEBUG_MODE) {
       drawDebugBoxes(g)
+      g.drawFPS(Color.BLUE)
     }
   }
 

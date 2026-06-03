@@ -17,20 +17,14 @@ class WalkState(private var executorAction: InputAction) extends PlayerState {
     if (!c.isToggled(executorAction)) {
       c.updateState(new IdleState)
       return
-    }
-
-    if (c.isToggled(InputActions.JUMP)) {
+    } else if (c.isToggled(InputActions.JUMP)) {
       c.updateState(new JumpState(direction))
-      return
-    }
-
-    c.position.add(translationVector.x * direction, translationVector.y)
-
-    if (c.tryExecuteLastCommand(
+    } else if (c.tryExecuteLastCommand(
       InputActions.PUNCH,
       () => c.updateState(new PunchState())
     )) {
-      return
+    } else {
+      c.position.add(translationVector.x * direction, translationVector.y)
     }
   }
 

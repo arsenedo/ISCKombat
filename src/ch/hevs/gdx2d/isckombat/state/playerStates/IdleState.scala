@@ -3,6 +3,7 @@ package ch.hevs.gdx2d.isckombat.state.playerStates
 import ch.hevs.gdx2d.isckombat.entity.Player
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions.InputAction
+import ch.hevs.gdx2d.isckombat.state.playerStates.Crouch.CrouchState
 
 class IdleState() extends PlayerState {
 
@@ -20,23 +21,11 @@ class IdleState() extends PlayerState {
 
     if (c.isToggled(InputActions.JUMP)) {
       c.updateState(new JumpState)
-      return
-    }
-
-    if (c.tryExecuteLastCommand(
-      InputActions.CROUCH,
-      () => c.updateState(new CrouchState())
-    )) {
-      return
-    }
-    if (c.tryExecuteLastCommand(
-      InputActions.BLOCK,
-      () => c.updateState(new BlockState())
-    )) {
-      return
-    }
-
-    if (c.tryExecuteLastCommand(
+    } else if (c.isToggled(InputActions.CROUCH)) {
+      c.updateState(new CrouchState())
+    } else if (c.isToggled(InputActions.BLOCK)) {
+      c.updateState(new BlockState)
+    } else if (c.tryExecuteLastCommand(
       InputActions.PUNCH,
       () => c.updateState(new PunchState())
     )) {

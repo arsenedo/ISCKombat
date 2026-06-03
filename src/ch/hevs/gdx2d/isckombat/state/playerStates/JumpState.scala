@@ -18,6 +18,9 @@ class JumpState(direction: Int = 0) extends PlayerState {
       owner.updateSpritesheet(directionalJumpSpritesheet)
       owner.getSpritesLoader.setSpritesheetFlipState(directionalJumpSpritesheet.spritesheet, direction < 0)
     }
+
+    owner.tryPlaySoundOnCurrentFrame()
+
     velocity.y = 50f
   }
 

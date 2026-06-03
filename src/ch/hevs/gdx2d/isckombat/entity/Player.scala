@@ -1,5 +1,6 @@
 package ch.hevs.gdx2d.isckombat.entity
 
+import ch.hevs.gdx2d.components.audio.SoundSample
 import ch.hevs.gdx2d.isckombat.entity.inputs.{Controllable, InputCommand}
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions.InputAction
 import ch.hevs.gdx2d.isckombat.state.State
@@ -45,12 +46,27 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
     false
   }
 
+  def tryPlaySoundOnCurrentFrame(): Unit = {
+    if (getCurrentSpriteConfig.soundOnFrames.isDefined) {
+      val soundOnFrames = getCurrentSpriteConfig.soundOnFrames.get
+
+      val moduloFrame = getCurrentFrame % getCurrentSpriteConfig.nFrames
+      if (soundOnFrames.contains(moduloFrame)) {
+        soundOnFrames(moduloFrame).play()
+      }
+    }
+  }
+
   def isToggled(action: InputAction): Boolean = {
     inputsHandler.isToggled(action)
   }
 
   def getHitboxAtCurrentFrame: Option[Hitbox] = {
     hitboxManager.getHitboxAtFrame(getCurrentFrame)
+  }
+
+  def getHurtboxAtCurrentFrame: Hurtbox = {
+    getCurrentSpriteConfig.getHurtboxOnFrame(getCurrentFrame)
   }
 
   def getHealth: Int = {
@@ -72,6 +88,17 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
 
   override def drawDebugBoxes(g: GdxGraphics): Unit = {
     super.drawDebugBoxes(g)
+
+    val flipAdjustedPos: Vector2 = getFlipAdjustedPosition
+    val hurtbox = getHurtboxAtCurrentFrame
+    g.setColor(Color.LIME)
+    g.drawRectangle(
+      flipAdjustedPos.x + hurtbox.width / 2,
+      flipAdjustedPos.y + hurtbox.height / 2,
+      hurtbox.width,
+      hurtbox.height,
+      0
+    )
 
     val hbOption = getHitboxAtCurrentFrame
     if (hbOption.isDefined) {
