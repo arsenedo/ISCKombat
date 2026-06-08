@@ -1,5 +1,6 @@
 package ch.hevs.gdx2d.isckombat
 
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.desktop.PortableApplication
 import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Player, Scorpion}
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 
 import scala.collection.mutable
+import scala.util.Random
 
 object Game {
   def main(args: Array[String]): Unit = {
@@ -29,6 +31,8 @@ class Game extends PortableApplication(1920, 1080){
 
   private var background: BitmapImage = _
 
+  private var activeMusic: MusicPlayer = _
+
   override def onInit(): Unit = {
     player1 = new Scorpion(0, new Vector2(50,100))
     player2 = new MichaelJackson(1, new Vector2(getWindowWidth - 200, 100))
@@ -36,10 +40,23 @@ class Game extends PortableApplication(1920, 1080){
     player1.setInputs(InputConfigs.getPlayer1InputMap)
     player2.setInputs(InputConfigs.getPlayer2InputMap)
 
+    player1.enemyId = player2.id
+    player2.enemyId = player1.id
+
     EntityRegister.addEntity(player1)
     EntityRegister.addEntity(player2)
 
     background = new BitmapImage("data/images/bg.jpg")
+
+    val bgMusic: Array[MusicPlayer] = Array(
+      new MusicPlayer("data/music/06. Warrior Shrine.mp3"),
+      new MusicPlayer("data/music/05. Palace Gates.mp3"),
+      new MusicPlayer("data/music/08. Throne Room.mp3"),
+    )
+
+    activeMusic = bgMusic(Random.between(0, bgMusic.length))
+    activeMusic.setVolume(0.25f)
+    activeMusic.loop()
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
@@ -48,9 +65,8 @@ class Game extends PortableApplication(1920, 1080){
     g.clear()
 
     g.drawPicture(getWindowWidth/2, getWindowHeight/2 + 50, background)
-    player1.drawSprite(g)
 
-    player2.drawSprite(g)
+    EntityRegister.entities.foreach((entity) => entity.drawSprite(g))
 
     if (DEBUG_MODE) {
       drawDebugBoxes(g)
@@ -67,8 +83,10 @@ class Game extends PortableApplication(1920, 1080){
   }
 
   private def simulationPhase(): Unit = {
-   player1.update(player2.position)
-   player2.update(player1.position)
+    player1.update(player2.position)
+    player2.update(player1.position)
+
+    EntityRegister.entities.filter(entity => !entity.isInstanceOf[Player]).foreach(entity => entity.update())
   }
 
   private def detectAndApplyCollisions(): Unit = {
@@ -91,6 +109,10 @@ class Game extends PortableApplication(1920, 1080){
       player1.updateState(new VictoryState())
       gameEnded = true
     }
+
+    if (gameEnded) {
+      activeMusic.stop()
+    }
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -112,7 +134,6 @@ class Game extends PortableApplication(1920, 1080){
   }
 
   private def drawDebugBoxes(g: GdxGraphics): Unit = {
-    player1.drawDebugBoxes(g)
-    player2.drawDebugBoxes(g)
+    EntityRegister.entities.foreach(entity => entity.drawDebugBoxes(g))
   }
 }

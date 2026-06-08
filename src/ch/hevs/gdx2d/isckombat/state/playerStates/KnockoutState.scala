@@ -24,4 +24,6 @@ class KnockoutState extends PlayerState {
       g.draw(player.getCurrentSpriteConfig.spritesheet.sprites(0)(lastFrame), flipAdjustedPos.x, flipAdjustedPos.y)
     }
   }
+
+  override def checkActiveCombo(player: Player): Unit = {}
 }

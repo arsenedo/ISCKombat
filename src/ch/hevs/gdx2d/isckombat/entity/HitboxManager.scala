@@ -40,9 +40,6 @@ class HitboxManager(entityId: Int, getEntityPosition: () => Vector2) {
       }
     }
 
-    val entityPosition: Vector2 = getEntityPosition()
-    val position = new Vector2(entityPosition.x + hitboxOffset.x, entityPosition.y + hitboxOffset.y)
-
-    Hitbox(position, spriteWidth, (spriteHeight.toFloat * 1f/3f).toInt, entityId)
+    Hitbox(hitboxOffset, spriteWidth, (spriteHeight.toFloat * 1f/3f).toInt, entityId, getEntityPosition)
   }
 }

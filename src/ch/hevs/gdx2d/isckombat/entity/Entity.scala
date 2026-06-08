@@ -1,5 +1,6 @@
 package ch.hevs.gdx2d.isckombat.entity
 
+import ch.hevs.gdx2d.isckombat.registers.EntityRegister
 import ch.hevs.gdx2d.isckombat.sprites.{SpriteConfig, SpritesLoader}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
@@ -9,14 +10,23 @@ import com.badlogic.gdx.math.Vector2
 abstract class Entity(val id: Int, val position: Vector2) {
   loadSpritesheets()
 
-  private var currentFrame = 0
+  var currentFrame = 0
+
+  protected val hitboxManager: HitboxManager = new HitboxManager(id, () => {getFlipAdjustedPosition})
+
   private var currentTick = 0
   private var currentSprite: SpriteConfig = _
+
+  def onDelete(): Unit = {
+    EntityRegister.removeEntity(this)
+  }
 
   def updateSpritesheet(newSpritesheet: SpriteConfig): Unit = {
     currentTick = 0
     currentFrame = 0
+    hitboxManager.clearHitboxesMap()
     currentSprite = newSpritesheet
+    hitboxManager.updateHitboxesMap(getCurrentSpriteConfig)
   }
 
   def update(): Unit = {
@@ -38,7 +48,21 @@ abstract class Entity(val id: Int, val position: Vector2) {
     g.draw(this.getCurrentSpriteFrame, flipAdjustedPos.x, flipAdjustedPos.y)
   }
 
-  def drawDebugBoxes(g: GdxGraphics): Unit = {}
+  def drawDebugBoxes(g: GdxGraphics): Unit = {
+    val hbOption = getHitboxAtCurrentFrame
+    if (hbOption.isDefined) {
+      val hitbox = hbOption.get
+      val pos = hitbox.getGlobalPosition
+      g.setColor(Color.RED)
+      g.drawRectangle(
+        pos.x + hitbox.width / 2,
+        pos.y + hitbox.height / 2,
+        hitbox.width,
+        hitbox.height,
+        0
+      )
+    }
+  }
 
   def getSpritesLoader: SpritesLoader
 
@@ -48,17 +72,10 @@ abstract class Entity(val id: Int, val position: Vector2) {
 
   def getCurrentSpriteConfig: SpriteConfig = currentSprite
 
-  def getFlipAdjustedPosition: Vector2 = {
-    if (!getCurrentSpriteFrame.isFlipX) {
-      return new Vector2(position.x, position.y)
-    }
+  def getFlipAdjustedPosition: Vector2
 
-    val idleFrameWidth: Int = getSpritesLoader.getIdleSpritesheet.spritesheet.sprites(0)(0).getRegionWidth
-    val currentSpriteFrameWidth: Int = getCurrentSpriteFrame.getRegionWidth
-
-    val dx = currentSpriteFrameWidth - idleFrameWidth
-
-    new Vector2(position.x - dx, position.y)
+  def getHitboxAtCurrentFrame: Option[Hitbox] = {
+    hitboxManager.getHitboxAtFrame(getCurrentFrame % currentSprite.nFrames)
   }
 
   def getCurrentSpriteFrame: TextureRegion = {

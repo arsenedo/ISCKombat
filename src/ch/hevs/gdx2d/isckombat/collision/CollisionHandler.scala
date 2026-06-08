@@ -26,6 +26,6 @@ object CollisionHandler {
 
   // TODO CREATE A TRAIT FOR COLLIDABLES
   private def getHitboxes: mutable.Set[Hitbox] = {
-    EntityRegister.entities.filter(entity => entity.asInstanceOf[Player].getHitboxAtCurrentFrame.isDefined).map(entity => entity.asInstanceOf[Player].getHitboxAtCurrentFrame.get)
+    EntityRegister.entities.filter(entity => entity.getHitboxAtCurrentFrame.isDefined).map(entity => entity.getHitboxAtCurrentFrame.get)
   }
 }

@@ -1,16 +1,20 @@
-package ch.hevs.gdx2d.isckombat.sprites
+package ch.hevs.gdx2d.isckombat.sprites.SpritesLoaders
 
 import ch.hevs.gdx2d.components.audio.SoundSample
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
 import ch.hevs.gdx2d.isckombat.entity.Hurtbox
+import ch.hevs.gdx2d.isckombat.sprites.{SpriteActions, SpriteConfig, SpritesLoader}
 
 import scala.collection.immutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 object MichaelJacksonSpritesLoader extends SpritesLoader {
   private var spritesLoaded = false
 
   private var victorySpritesheetArray: Array[SpriteConfig] = Array.empty
+
+  private var hatThrowSpritesheet: SpriteConfig = _
 
   override def spritesheetsPath: String = {
     super.spritesheetsPath + "characters/mj"
@@ -128,12 +132,31 @@ object MichaelJacksonSpritesLoader extends SpritesLoader {
       1
     )
 
+    hatThrowSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/hat_throw.png", 236, 373),
+      4,
+      5,
+      soundOnFrames = Some(HashMap(
+        0 -> new SoundSample(s"$soundsPath/smooth_criminal.wav")
+      ))
+    )
+
     spritesLoaded = true
   }
+
+  def getHatThrowSpritesheet: SpriteConfig = hatThrowSpritesheet
 
   override def getVictorySpritesheet: SpriteConfig = {
     victorySpritesheet = victorySpritesheetArray(Random.between(0, victorySpritesheetArray.length))
 
     super.getVictorySpritesheet
+  }
+
+  override def getFlippableSpirtesheets: ArrayBuffer[SpriteConfig] = {
+    val parentFlippables: ArrayBuffer[SpriteConfig] = super.getFlippableSpirtesheets
+
+    parentFlippables.addOne(getHatThrowSpritesheet)
+
+    parentFlippables
   }
 }

@@ -2,6 +2,8 @@ package ch.hevs.gdx2d.isckombat.sprites
 
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
 
+import scala.collection.mutable.ArrayBuffer
+
 trait SpritesLoader {
   protected var idleSpritesheet: SpriteConfig = _
   protected var walkSpritesheet: SpriteConfig = _
@@ -37,20 +39,7 @@ trait SpritesLoader {
 
 
   def setAllSpritesFlipState(isFlipped: Boolean): Unit = {
-    val spritesheets: Array[SpriteConfig] = Array(
-      getIdleSpritesheet,
-      getWalkSpritesheet,
-      getPunchSpritesheet,
-      getHitSpritesheet,
-      getJumpSpritesheet,
-      getFallingSpritesheet,
-      getCrouchSpritesheet,
-      getCrouchkickSpritesheet,
-      getCrouchHitSpritesheet,
-      getCrouchkickSpritesheet,
-      getBlockSpritesheet,
-      getCrouchBlockSpritesheet
-    )
+    val spritesheets: ArrayBuffer[SpriteConfig] = getFlippableSpirtesheets
 
     for (spriteConf <- spritesheets) {
       setSpritesheetFlipState(spriteConf.spritesheet, isFlipped)
@@ -65,5 +54,22 @@ trait SpritesLoader {
         }
       }
     }
+  }
+
+  def getFlippableSpirtesheets: ArrayBuffer[SpriteConfig] = {
+    ArrayBuffer[SpriteConfig](
+      getIdleSpritesheet,
+      getWalkSpritesheet,
+      getPunchSpritesheet,
+      getHitSpritesheet,
+      getJumpSpritesheet,
+      getFallingSpritesheet,
+      getCrouchSpritesheet,
+      getCrouchkickSpritesheet,
+      getCrouchHitSpritesheet,
+      getCrouchkickSpritesheet,
+      getBlockSpritesheet,
+      getCrouchBlockSpritesheet
+    )
   }
 }

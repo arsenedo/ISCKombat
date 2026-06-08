@@ -1,33 +1,38 @@
 package ch.hevs.gdx2d.isckombat.entity
 
-import ch.hevs.gdx2d.components.audio.SoundSample
 import ch.hevs.gdx2d.isckombat.entity.inputs.{Controllable, InputCommand}
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputActions.InputAction
-import ch.hevs.gdx2d.isckombat.state.State
 import ch.hevs.gdx2d.isckombat.state.playerStates.{IdleState, PlayerState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 
+import scala.collection.immutable.HashMap
+
 abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, position: Vector2) with Controllable {
+  var enemyId = -1
+
   private var state: PlayerState = new IdleState
   private var health: Int = 1000
-  private val hitboxManager: HitboxManager = new HitboxManager(id, () => {getFlipAdjustedPosition})
 
   state.enter(this)
 
+  def getCombinations: HashMap[String, Array[InputAction]] = HashMap.empty
+
+  def getCombinationStates: HashMap[String, PlayerState] = HashMap.empty
+
   def updateState(newState: PlayerState): Unit = {
     state.exit(this)
-    hitboxManager.clearHitboxesMap()
 
     newState.enter(this)
-    hitboxManager.updateHitboxesMap(getCurrentSpriteConfig)
 
     state = newState
   }
 
   def update(enemyPos: Vector2): Unit = {
     super.update()
+
+    state.checkActiveCombo(this)
 
     state.update(this)
 
@@ -38,7 +43,7 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
     val latestCommandOption = inputsHandler.getHistory.lastOption
     if (latestCommandOption.isEmpty) return false
     val latestCommand = latestCommandOption.get
-    if (latestCommand.isActive && latestCommand.action == inputAction) {
+    if (latestCommand.isActive && !latestCommand.hasActivatedACombo && latestCommand.action == inputAction) {
       onSuccess()
       return true
     }
@@ -52,6 +57,7 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
 
       val moduloFrame = getCurrentFrame % getCurrentSpriteConfig.nFrames
       if (soundOnFrames.contains(moduloFrame)) {
+        soundOnFrames(moduloFrame).stop()
         soundOnFrames(moduloFrame).play()
       }
     }
@@ -61,16 +67,25 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
     inputsHandler.isToggled(action)
   }
 
-  def getHitboxAtCurrentFrame: Option[Hitbox] = {
-    hitboxManager.getHitboxAtFrame(getCurrentFrame)
-  }
-
   def getHurtboxAtCurrentFrame: Hurtbox = {
     getCurrentSpriteConfig.getHurtboxOnFrame(getCurrentFrame)
   }
 
   def getHealth: Int = {
     health
+  }
+
+  override def getFlipAdjustedPosition: Vector2 = {
+    if (!getCurrentSpriteFrame.isFlipX) {
+      return new Vector2(position.x, position.y)
+    }
+
+    val idleFrameWidth: Int = getSpritesLoader.getIdleSpritesheet.spritesheet.sprites(0)(0).getRegionWidth
+    val currentSpriteFrameWidth: Int = getCurrentSpriteFrame.getRegionWidth
+
+    val dx = currentSpriteFrameWidth - idleFrameWidth
+
+    new Vector2(position.x - dx, position.y)
   }
 
   def applyDamage(damage: Int): Unit = {
@@ -99,19 +114,5 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
       hurtbox.height,
       0
     )
-
-    val hbOption = getHitboxAtCurrentFrame
-    if (hbOption.isDefined) {
-      val hitbox = hbOption.get
-      val pos = hitbox.position
-      g.setColor(Color.RED)
-      g.drawRectangle(
-        pos.x + hitbox.width / 2,
-        pos.y + hitbox.height / 2,
-        hitbox.width,
-        hitbox.height,
-        0
-      )
-    }
   }
 }

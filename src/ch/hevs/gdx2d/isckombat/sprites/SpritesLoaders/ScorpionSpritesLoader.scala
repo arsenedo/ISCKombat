@@ -1,12 +1,16 @@
-package ch.hevs.gdx2d.isckombat.sprites
+package ch.hevs.gdx2d.isckombat.sprites.SpritesLoaders
 
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
 import ch.hevs.gdx2d.isckombat.entity.Hurtbox
+import ch.hevs.gdx2d.isckombat.sprites.{SpriteActions, SpriteConfig, SpritesLoader}
 
 import scala.collection.immutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 
 object ScorpionSpritesLoader extends SpritesLoader {
   private var spritesLoaded = false
+
+  private var spearThrowSpritesheet: SpriteConfig = _
 
   override def spritesheetsPath: String = {
     super.spritesheetsPath + "characters/scorpion"
@@ -104,6 +108,24 @@ object ScorpionSpritesLoader extends SpritesLoader {
       1
     )
 
+    spearThrowSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/throw_spear.png", 394, 375),
+      6,
+      7
+    )
+
+    SpearSpritesLoader.loadSpritesheets() // Load dependency spritesheets
+
     spritesLoaded = true
+  }
+
+  def getSpearThrowSpritesheet: SpriteConfig = spearThrowSpritesheet
+
+  override def getFlippableSpirtesheets: ArrayBuffer[SpriteConfig] = {
+    val parentFlippables: ArrayBuffer[SpriteConfig] = super.getFlippableSpirtesheets
+
+    parentFlippables.addOne(getSpearThrowSpritesheet)
+
+    parentFlippables
   }
 }
