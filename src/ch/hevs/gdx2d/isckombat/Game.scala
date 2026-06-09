@@ -7,6 +7,7 @@ import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Player, S
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputConfigs
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
+import ch.hevs.gdx2d.isckombat.interface.Scene
 import ch.hevs.gdx2d.isckombat.state.playerStates.{HitState, KnockoutState, VictoryState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
@@ -28,12 +29,14 @@ class Game extends PortableApplication(1920, 1080){
   private var player1: Player = _
   private var player2: Player = _
   private var gameEnded: Boolean = false
+  private var scene : Scene = _
 
   private var background: BitmapImage = _
 
   private var activeMusic: MusicPlayer = _
 
   override def onInit(): Unit = {
+    scene = new Scene
     player1 = new Scorpion(0, new Vector2(50,100))
     player2 = new MichaelJackson(1, new Vector2(getWindowWidth - 200, 100))
 
@@ -67,6 +70,9 @@ class Game extends PortableApplication(1920, 1080){
     g.drawPicture(getWindowWidth/2, getWindowHeight/2 + 50, background)
 
     EntityRegister.entities.foreach((entity) => entity.drawSprite(g))
+    scene.renderScene(g, player1, player2)
+
+
 
     if (DEBUG_MODE) {
       drawDebugBoxes(g)
