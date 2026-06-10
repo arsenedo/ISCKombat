@@ -8,6 +8,7 @@ import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputConfigs
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
 import ch.hevs.gdx2d.isckombat.interface.{Scene, StagesLoader}
+import ch.hevs.gdx2d.isckombat.sprites.SpritesLoaders.ScorpionSpritesLoader
 import ch.hevs.gdx2d.isckombat.state.playerStates.{HitState, KnockoutState, VictoryState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
@@ -25,7 +26,7 @@ object Game {
 }
 
 class Game extends PortableApplication(1920, 1080){
-  private val DEBUG_MODE: Boolean = true
+  private val DEBUG_MODE: Boolean = false
 
   private var player1: Player = _
   private var player2: Player = _
@@ -149,6 +150,9 @@ class Game extends PortableApplication(1920, 1080){
   private def setupControllerListeners(): Unit = {
     val controllers = Controllers.getControllers
 
+    // The implementation of the controller linking is not great
+    // We really wanted to have controllers working for this project, so we simply tried to make it work
+    // Don't be harsh with us about that please T_T
     controllers.forEach(controller => {
       var playerOption: Option[Player] = None
       controller.addListener(new ControllerListener {
