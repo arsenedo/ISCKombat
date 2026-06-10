@@ -1,6 +1,6 @@
 package ch.hevs.gdx2d.isckombat
 
-import ch.hevs.gdx2d.components.audio.MusicPlayer
+import ch.hevs.gdx2d.components.audio.{MusicPlayer, SoundSample}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.desktop.{PortableApplication, Xbox}
 import ch.hevs.gdx2d.isckombat.entity.{Dio, Entity, Hitbox, MichaelJackson, Player, Scorpion}
@@ -38,7 +38,7 @@ class Game extends PortableApplication(1920, 1080){
   override def onInit(): Unit = {
     scene = new Scene(StagesLoader.createRandomStage)
     player1 = new Scorpion(0, new Vector2(50,100))
-    player2 = new MichaelJackson(1, new Vector2(getWindowWidth - 200, 100))
+    player2 = new Dio(1, new Vector2(getWindowWidth - 200, 100))
 
     player1.setInputs(InputConfigs.getPlayer1InputMap)
     player2.setInputs(InputConfigs.getPlayer2InputMap)
@@ -55,6 +55,8 @@ class Game extends PortableApplication(1920, 1080){
     )
 
     setupControllerListeners()
+
+    new SoundSample("data/sounds/misc/round1_fight.wav").play()
 
     scene.startMusic()
   }
