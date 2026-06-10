@@ -26,9 +26,9 @@ object InputConfigs {
     PovDirection.north -> Array(JUMP),
     PovDirection.northEast -> Array(MOVE_RIGHT, JUMP),
     PovDirection.east -> Array(MOVE_RIGHT),
-    PovDirection.southEast -> Array(MOVE_RIGHT, CROUCH),
+    PovDirection.southEast -> Array(CROUCH),
     PovDirection.south -> Array(CROUCH),
-    PovDirection.southWest -> Array(MOVE_LEFT, CROUCH),
+    PovDirection.southWest -> Array(CROUCH),
     PovDirection.west -> Array(MOVE_LEFT),
     PovDirection.northWest -> Array(MOVE_LEFT, JUMP)
 
@@ -39,8 +39,8 @@ object InputConfigs {
     Input.Keys.A -> InputActions.MOVE_LEFT,
     Input.Keys.S -> InputActions.CROUCH,
     Input.Keys.D -> InputActions.MOVE_RIGHT,
-    Input.Keys.F -> InputActions.PUNCH,
-    Input.Keys.T -> InputActions.BLOCK
+    Input.Keys.T -> InputActions.PUNCH,
+    Input.Keys.H -> InputActions.BLOCK
 
   )
 
