@@ -5,11 +5,26 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import io.AnsiColor._
 
-class Scene {
-
-
-
+class Scene(stage: Stage) {
   def renderScene(g: GdxGraphics, p1 : Player, p2 : Player): Unit = {
+    drawStage(g)
+
+    drawHealthbars(g, p1, p2)
+  }
+
+  def startMusic(): Unit = {
+    stage.music.loop()
+  }
+
+  def stopMusic(): Unit = {
+    stage.music.stop()
+  }
+
+  private def drawStage(g: GdxGraphics): Unit = {
+    g.drawPicture(g.getScreenWidth/2, g.getScreenHeight/2, stage.background)
+  }
+
+  private def drawHealthbars(g: GdxGraphics, p1: Player, p2: Player): Unit = {
     val healthBarWidth = g.getScreenWidth.toFloat * 0.3f
     val healthBarHeight = 100
     val HealthBarXoffset = healthBarWidth / 2 + 50
@@ -22,10 +37,5 @@ class Scene {
 
     g.drawFilledRectangle(HealthBarXoffset - p1damagesoffset/2, healthBarYoffset, healthBarWidth * (p1.getHealth).toFloat / 1000.0f, healthBarHeight,0, Color.GREEN)
     g.drawFilledRectangle(p2HealthBarPosX + p2damagesoffset/2, healthBarYoffset, healthBarWidth * (p2.getHealth).toFloat / 1000.0f, healthBarHeight,0, Color.GREEN)
-
-    println(healthBarWidth * (p1.getHealth).toFloat / 1000.0f)
-
-
   }
-
 }

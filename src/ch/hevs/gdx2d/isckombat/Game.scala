@@ -2,17 +2,18 @@ package ch.hevs.gdx2d.isckombat
 
 import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
-import ch.hevs.gdx2d.desktop.PortableApplication
+import ch.hevs.gdx2d.desktop.{PortableApplication, Xbox}
 import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Player, Scorpion}
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputConfigs
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
-import ch.hevs.gdx2d.isckombat.interface.Scene
+import ch.hevs.gdx2d.isckombat.interface.{Scene, StagesLoader}
 import ch.hevs.gdx2d.isckombat.state.playerStates.{HitState, KnockoutState, VictoryState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.controllers.{Controller, ControllerListener, Controllers, PovDirection}
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Vector2, Vector3}
 
 import scala.collection.mutable
 import scala.util.Random
@@ -31,12 +32,10 @@ class Game extends PortableApplication(1920, 1080){
   private var gameEnded: Boolean = false
   private var scene : Scene = _
 
-  private var background: BitmapImage = _
-
-  private var activeMusic: MusicPlayer = _
+  private var controllerMap: mutable.LinkedHashMap[Player, Option[Controller]] = _
 
   override def onInit(): Unit = {
-    scene = new Scene
+    scene = new Scene(StagesLoader.createRandomStage)
     player1 = new Scorpion(0, new Vector2(50,100))
     player2 = new MichaelJackson(1, new Vector2(getWindowWidth - 200, 100))
 
@@ -49,17 +48,14 @@ class Game extends PortableApplication(1920, 1080){
     EntityRegister.addEntity(player1)
     EntityRegister.addEntity(player2)
 
-    background = new BitmapImage("data/images/bg.jpg")
-
-    val bgMusic: Array[MusicPlayer] = Array(
-      new MusicPlayer("data/music/06. Warrior Shrine.mp3"),
-      new MusicPlayer("data/music/05. Palace Gates.mp3"),
-      new MusicPlayer("data/music/08. Throne Room.mp3"),
+    controllerMap = mutable.LinkedHashMap(
+      player1 -> None,
+      player2 -> None
     )
 
-    activeMusic = bgMusic(Random.between(0, bgMusic.length))
-    activeMusic.setVolume(0.25f)
-    activeMusic.loop()
+    setupControllerListeners()
+
+    scene.startMusic()
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
@@ -67,12 +63,9 @@ class Game extends PortableApplication(1920, 1080){
 
     g.clear()
 
-    g.drawPicture(getWindowWidth/2, getWindowHeight/2 + 50, background)
-
-    EntityRegister.entities.foreach((entity) => entity.drawSprite(g))
     scene.renderScene(g, player1, player2)
 
-
+    EntityRegister.entities.foreach((entity) => entity.drawSprite(g))
 
     if (DEBUG_MODE) {
       drawDebugBoxes(g)
@@ -117,7 +110,7 @@ class Game extends PortableApplication(1920, 1080){
     }
 
     if (gameEnded) {
-      activeMusic.stop()
+      scene.stopMusic()
     }
   }
 
@@ -141,5 +134,66 @@ class Game extends PortableApplication(1920, 1080){
 
   private def drawDebugBoxes(g: GdxGraphics): Unit = {
     EntityRegister.entities.foreach(entity => entity.drawDebugBoxes(g))
+  }
+
+  private def setupControllerListeners(): Unit = {
+    val controllers = Controllers.getControllers
+
+    controllers.forEach(controller => {
+      var playerOption: Option[Player] = None
+      controller.addListener(new ControllerListener {
+        override def connected(controller: Controller): Unit = {}
+
+        override def disconnected(controller: Controller): Unit = {}
+
+        override def buttonDown(controller: Controller, i: Int): Boolean = {
+          if (i == Xbox.START) {
+            val freePlayer = controllerMap.keys.find((player) => controllerMap(player).isEmpty)
+            println(freePlayer)
+            if (freePlayer.isDefined && playerOption.isEmpty) {
+              controllerMap(freePlayer.get) = Some(controller)
+              playerOption = freePlayer
+            }
+            return false
+          }
+
+          if (playerOption.isDefined) {
+            playerOption.get.handleControllerButtonDown(i)
+          }
+          true
+        }
+
+        override def buttonUp(controller: Controller, i: Int): Boolean = {
+          if (playerOption.isDefined) {
+            playerOption.get.handleControllerButtonUp(i)
+          }
+          false
+        }
+
+        override def axisMoved(controller: Controller, i: Int, v: Float): Boolean = {
+
+          false
+        }
+
+        override def povMoved(controller: Controller, i: Int, povDirection: PovDirection): Boolean = {
+          if (playerOption.isDefined) {
+            playerOption.get.handleControllerPovDirectionChange(povDirection)
+          }
+          false
+        }
+
+        override def xSliderMoved(controller: Controller, i: Int, b: Boolean): Boolean = {
+
+          false
+        }
+
+        override def ySliderMoved(controller: Controller, i: Int, b: Boolean): Boolean = {
+
+          false
+        }
+
+        override def accelerometerMoved(controller: Controller, i: Int, vector3: Vector3): Boolean = false
+      })
+    })
   }
 }

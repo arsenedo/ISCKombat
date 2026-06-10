@@ -1,7 +1,8 @@
 package ch.hevs.gdx2d.isckombat.entity.inputs
 
 import scala.collection.mutable
-import InputActions.InputAction
+import InputActions.{CROUCH, InputAction, JUMP, MOVE_LEFT, MOVE_RIGHT}
+import com.badlogic.gdx.controllers.PovDirection
 
 class InputHandler {
   private var playerInputs : mutable.HashMap[Int, InputAction] = _
@@ -47,6 +48,42 @@ class InputHandler {
       if (togglable.contains(action)) {
         togglable(action) = false
       }
+    }
+  }
+
+  def handleControllerButtonDown(i: Int): Unit = {
+    if (InputConfigs.getXboxInputMap.contains(i)) {
+      val action = InputConfigs.getXboxInputMap(i)
+      if (togglable.contains(action)) {
+        togglable(action) = true
+      }
+      addCommandToHistory(action)
+    }
+  }
+
+  def handleControllerButtonUp(i: Int): Unit = {
+    if (InputConfigs.getXboxInputMap.contains(i)) {
+      val action = InputConfigs.getXboxInputMap(i)
+      if (togglable.contains(action)) {
+        togglable(action) = false
+      }
+    }
+  }
+
+  def handleControllerPovDirectionChange(povDirection: PovDirection): Unit = {
+    for (togglableAction <- togglable.keys.toArray) {
+      togglable(togglableAction) = false
+    }
+
+    if (povDirection == PovDirection.center) return
+
+    val inputActions: Array[InputAction] = InputConfigs.controllerDirectionsMap(povDirection)
+
+    for (inputAction <- inputActions) {
+      if (togglable.contains(inputAction)) {
+        togglable(inputAction) = true
+      }
+      addCommandToHistory(inputAction)
     }
   }
 
