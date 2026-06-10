@@ -9,6 +9,17 @@ import com.badlogic.gdx.math.Vector2
 
 import scala.collection.immutable.HashMap
 
+object Player {
+  def createCharacter(id: Int, name: String): Player = {
+    name match {
+      case "Scorpion" => new Scorpion(id, new Vector2(0, 0))
+      case "Dio" => new Dio(id, new Vector2(0, 0))
+      case "Michael Jackson" => new MichaelJackson(id, new Vector2(0, 0))
+      case "Johnny" => new Johnny(id, new Vector2(0, 0))
+    }
+  }
+}
+
 abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, position: Vector2) with Controllable {
   var enemyId = -1
 
