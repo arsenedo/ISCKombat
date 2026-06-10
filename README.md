@@ -1,66 +1,68 @@
 # ISC Kombat
-A fighting game inspired from the existing game, mortal kombat.
+A fun little project, inspired by 90s fighting games
 
 ## About the game
 ### Overview
 ISC Kombat is a 2 player fighting game, where both players fight to their death. Only one can come out alive.
-### Game Loop
-#### Main menu
-In order to start a match, each player needs to choose a character. 
-Basic attacks are similar for all characters, though each has their own special attacks.
-#### Match
-The match is decided by the best of 3. At the end of each round the player's health is completely refilled
-#### End
-The winning player has a few seconds to perform a fatality on the other one. 
-After this sequence, the players are sent back to the main menu.
 
-## Technical details
-## Scenes
-The game will contain 3 scenes :
-1. Character choice
-    * In order to start a match, both players need to pick a character
-2. Match
-   1. Ready up phase (both players are idle and controls are off)
-   2. Action phase (players fight freely)
-   3. Round end (best of 3)
-3. End (Fatality)
-   1. If player succeeds in the sequence, fatality executes
-   2. Else match ends
-## Class Diagram
-````mermaid
-classDiagram
-    class PortableApplication
-    class Game {
-        +override onInit() Unit
-        +override onGraphicsRender() Unit
-        +override onGameLogicUpdate() Unit
-        +override onKeyUp() Unit
-        +override onKeyDown() Unit
-    }
+### How to play
+#### Menu
+![menu image](data/images/screenshots/menu.png)
+Both players must select a character for the game to start.
 
-    class Character {
-        -currentSpriteIndex: Array[Int]
-        - position: Vector2
-        +drawSprite(g: GdxGraphics) Unit
-        +handleInput(action: Action) Unit
-        #getSpriteSheet() SpriteSheet
-    }
+Once characters are selected, the game starts automatically after 5 seconds.
 
-    class State {
-        <<Interface>>
-        + enter() Unit
-        + update() Unit
-        + exit() Unit
-        + handleInput() Unit
-    }
+Player 1 and Player 2 selections are represented by Blue and Green Rectangles respectively.
 
-    class ConcreteState
+The game contains 3 maps, which are picked randomly. Though they can be manually chosen using the `createStage(name: String): Option[Stage]` method of `StagesLoader`
 
-    PortableApplication --|> Game
+Xbox Controllers are fully supported in the game. They can be used, by pressing START at any time
 
-    State ..|> ConcreteState
+You can choose between 4 characters:
+* Scorpion
+* Johnny Cage
+* Dio
+* Michael Jackson
 
-    Game "1"-->"2" Character
+### Screenshots and video
+![Demo video](data/videos/demo.mp4)
+<img src="data/images/screenshots/screenshot_1.jpg" />
+<img src="data/images/screenshots/screenshot_2.jpg" />
+<img src="data/images/screenshots/screenshot_3.jpg" />
 
-    Character --> ConcreteState
-````
+## Controls
+### Keyboard
+| Action / Menu controls          | Player 1 | Player 2    |
+|---------------------------------|----------|-------------|
+| Jump         / Menu Up          | W        | Arrow Up    |
+| Move Right   / Menu Right       | D        | Arrow Right |
+| Crouch       / Menu Down        | S        | Arrow Down  |
+| Move Left    / Menu Left        | A        | Arrow Left  |
+| Punch        / Select Character | T        | P           |
+| Block                           | H        | L           |
+### Xbox controller
+Jump / Menu Up - DPAD Up
+
+Move Right / Menu Right - DPAD Right
+
+Crouch / Menu Down - DPAD Down
+
+Move Left / Menu Left - DPAD Left
+
+Punch / Select Character - X
+
+Block - A
+
+#### How to connect the controller?
+After the game launch, press "START" on the controller. It will automatically be assigned to the first available player
+
+
+## Character Special Moves
+### Scorpion
+**Get Over Here!** - "&#8592; &#8592; Punch"
+### Michael Jackson
+**Smooth Criminal** - "&#8595; &#8592; Punch"
+### Dio
+**MUDA MUDA MUDA MUDA** - "&#x2193; &#x2193; Punch"
+### Johnny Cage
+**DASH** - "&#8592; &#8592; Punch"
