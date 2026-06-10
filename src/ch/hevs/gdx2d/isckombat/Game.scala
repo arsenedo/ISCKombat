@@ -3,7 +3,7 @@ package ch.hevs.gdx2d.isckombat
 import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.desktop.{PortableApplication, Xbox}
-import ch.hevs.gdx2d.isckombat.entity.{Entity, Hitbox, MichaelJackson, Player, Scorpion}
+import ch.hevs.gdx2d.isckombat.entity.{Dio, Entity, Hitbox, MichaelJackson, Player, Scorpion}
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputConfigs
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister

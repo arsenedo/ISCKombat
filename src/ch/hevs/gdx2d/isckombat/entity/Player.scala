@@ -108,8 +108,8 @@ abstract class Player(id: Int, position: Vector2) extends Entity(id: Int, positi
     val hurtbox = getHurtboxAtCurrentFrame
     g.setColor(Color.LIME)
     g.drawRectangle(
-      flipAdjustedPos.x + hurtbox.width / 2,
-      flipAdjustedPos.y + hurtbox.height / 2,
+      flipAdjustedPos.x + hurtbox.offsetX + hurtbox.width / 2,
+      flipAdjustedPos.y + hurtbox.offsetY + hurtbox.height / 2,
       hurtbox.width,
       hurtbox.height,
       0

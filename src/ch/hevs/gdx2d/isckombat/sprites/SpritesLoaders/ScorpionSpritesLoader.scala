@@ -36,7 +36,7 @@ object ScorpionSpritesLoader extends SpritesLoader {
     punchSpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/punch.png", 330, 386),
       6,
-      6,
+      7,
       Some(HashMap(2->SpriteActions.ATTACK_TOP, 5->SpriteActions.ATTACK_TOP))
     )
 
