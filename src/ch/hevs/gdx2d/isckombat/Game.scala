@@ -3,12 +3,11 @@ package ch.hevs.gdx2d.isckombat
 import ch.hevs.gdx2d.components.audio.{MusicPlayer, SoundSample}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.desktop.{PortableApplication, Xbox}
-import ch.hevs.gdx2d.isckombat.entity.{Dio, Entity, Hitbox, MichaelJackson, Player, Scorpion}
+import ch.hevs.gdx2d.isckombat.entity.{Dio, Entity, Hitbox, Johnny, MichaelJackson, Player, Scorpion}
 import ch.hevs.gdx2d.isckombat.collision.CollisionHandler
 import ch.hevs.gdx2d.isckombat.entity.inputs.InputConfigs
 import ch.hevs.gdx2d.isckombat.registers.EntityRegister
 import ch.hevs.gdx2d.isckombat.interface.{Scene, StagesLoader}
-import ch.hevs.gdx2d.isckombat.sprites.SpritesLoaders.ScorpionSpritesLoader
 import ch.hevs.gdx2d.isckombat.state.playerStates.{HitState, KnockoutState, VictoryState}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
@@ -37,7 +36,7 @@ class Game extends PortableApplication(1920, 1080){
 
   override def onInit(): Unit = {
     scene = new Scene(StagesLoader.createRandomStage)
-    player1 = new Scorpion(0, new Vector2(50,100))
+    player1 = new Johnny(0, new Vector2(50,100))
     player2 = new Dio(1, new Vector2(getWindowWidth - 200, 100))
 
     player1.setInputs(InputConfigs.getPlayer1InputMap)
