@@ -108,4 +108,10 @@ class ThrowSpearState extends PlayerState {
   }
 
   override def checkActiveCombo(player: Player): Unit = {}
+
+  override def receiveDamage(player: Player, damage: Int): Unit = {
+    spear.onDelete()
+
+    super.receiveDamage(player, damage)
+  }
 }
