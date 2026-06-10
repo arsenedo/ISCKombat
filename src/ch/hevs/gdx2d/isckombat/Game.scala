@@ -86,6 +86,16 @@ class Game extends PortableApplication(1920, 1080){
     player2.update(player1.position)
 
     EntityRegister.entities.filter(entity => !entity.isInstanceOf[Player]).foreach(entity => entity.update())
+
+
+    for (player <- EntityRegister.getPlayers) {
+      val playerPosX = player.position.x
+      val playerWidth = player.getCurrentSpriteFrame.getRegionWidth
+
+      val bordersAdjustedX = math.max(0, math.min(getWindowWidth - (playerWidth.toFloat / 2f).toInt, playerPosX))
+
+      player.position.x = bordersAdjustedX
+    }
   }
 
   private def detectAndApplyCollisions(): Unit = {

@@ -23,4 +23,8 @@ object EntityRegister {
   def findEnemy(player: Player): Option[Entity] = {
     entities.find(entity => entity.isInstanceOf[Player] && entity != player)
   }
+
+  def getPlayers: Array[Entity] = {
+    entities.filter(entity => entity.isInstanceOf[Player]).toArray
+  }
 }
