@@ -1,7 +1,9 @@
 package ch.hevs.gdx2d.isckombat.sprites.SpritesLoaders
 
+import ch.hevs.gdx2d.components.audio.SoundSample
 import ch.hevs.gdx2d.components.bitmaps.Spritesheet
 import ch.hevs.gdx2d.isckombat.entity.Hurtbox
+import ch.hevs.gdx2d.isckombat.sprites.SpritesLoaders.MichaelJacksonSpritesLoader.soundsPath
 import ch.hevs.gdx2d.isckombat.sprites.{SpriteActions, SpriteConfig, SpritesLoader}
 
 import scala.collection.immutable.HashMap
@@ -10,6 +12,8 @@ import scala.collection.mutable.ArrayBuffer
 
 object JohnnySpritesLoader extends SpritesLoader {
   private var spritesLoaded = false
+
+  private var dashSpritesheet : SpriteConfig = _
 
 
   override def spritesheetsPath: String = {
@@ -67,7 +71,10 @@ object JohnnySpritesLoader extends SpritesLoader {
     victorySpritesheet = SpriteConfig(
       new Spritesheet(s"$spritesheetsPath/victory.png", 234, 420),
       12,
-      5
+      5,
+      soundOnFrames = Some(HashMap(
+        0 -> new SoundSample(s"$soundsPath/characters/johnny/victory_troll.wav")
+      ))
     )
 
     crouchSpritesheet = SpriteConfig(
@@ -109,6 +116,25 @@ object JohnnySpritesLoader extends SpritesLoader {
       isOneShot = true
     )
 
+    dashSpritesheet = SpriteConfig(
+      new Spritesheet(s"$spritesheetsPath/dash.png", 691, 386),
+      1,
+      7,
+      Some(HashMap(0->SpriteActions.ATTACK_TOP)),
+      hurtboxesOnFrames = Some(HashMap(
+        0 -> Hurtbox(0, 0, 0, 0),
+      )),
+    )
+
     spritesLoaded = true
+  }
+  def getDashSpritesheet: SpriteConfig = dashSpritesheet
+
+  override def getFlippableSpirtesheets: ArrayBuffer[SpriteConfig] = {
+    val parentFlippables: ArrayBuffer[SpriteConfig] = super.getFlippableSpirtesheets
+
+    parentFlippables.addOne(getDashSpritesheet)
+
+    parentFlippables
   }
 }
