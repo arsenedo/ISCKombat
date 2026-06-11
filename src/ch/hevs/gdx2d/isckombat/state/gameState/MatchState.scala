@@ -24,10 +24,6 @@ class MatchState(player1: Player, player2: Player) extends GameState {
   private var backToMenuTimerS: Long = 10
   private var scene : Scene = _
 
-  private var controllerMap: mutable.LinkedHashMap[Player, Option[Controller]] = _
-
-  private val controllersAndListenersMap: mutable.HashMap[Controller, ControllerListener] = mutable.HashMap()
-
   private var WINDOW_WIDTH = 0
 
   override def onGraphicsRender(g: GdxGraphics, game: Game): Unit = {
@@ -68,13 +64,6 @@ class MatchState(player1: Player, player2: Player) extends GameState {
     EntityRegister.addEntity(player1)
     EntityRegister.addEntity(player2)
 
-    controllerMap = mutable.LinkedHashMap(
-      player1 -> None,
-      player2 -> None
-    )
-
-    setupControllerListeners()
-
     new SoundSample("data/sounds/misc/round1_fight.wav").play()
 
     scene.startMusic()
@@ -89,11 +78,6 @@ class MatchState(player1: Player, player2: Player) extends GameState {
   }
 
   override def exit(owner: Game): Unit = {
-    // Clean up controller listeners so that they can be set up again in the next match
-    controllersAndListenersMap.foreachEntry((controller, controlerListener) => {
-      controller.removeListener(controlerListener)
-    })
-
     EntityRegister.removeEntity(player1)
     EntityRegister.removeEntity(player2)
   }
@@ -151,70 +135,27 @@ class MatchState(player1: Player, player2: Player) extends GameState {
     EntityRegister.entities.foreach(entity => entity.drawDebugBoxes(g))
   }
 
-  private def setupControllerListeners(): Unit = {
-    val controllers = Controllers.getControllers
+  override def handleControllerButtonDown(game: Game, controller: Controller, i: Int): Unit = {
+    if (game.controllersMap(controller) == game.P1Key) {
+      player1.handleControllerButtonDown(i)
+    } else if (game.controllersMap(controller) == game.P2Key) {
+      player2.handleControllerButtonDown(i)
+    }
+  }
 
-    // The implementation of the controller linking is not great
-    // We really wanted to have controllers working for this project, so we simply tried to make it work
-    // Don't be harsh with us about that please T_T
-    controllers.forEach(controller => {
-      var playerOption: Option[Player] = None
-      val controllerListener = new ControllerListener {
-        override def connected(controller: Controller): Unit = {}
+  override def handleControllerButtonUp(game: Game, controller: Controller, i: Int): Unit = {
+    if (game.controllersMap(controller) == game.P1Key) {
+      player1.handleControllerButtonUp(i)
+    } else if (game.controllersMap(controller) == game.P2Key) {
+      player2.handleControllerButtonUp(i)
+    }
+  }
 
-        override def disconnected(controller: Controller): Unit = {}
-
-        override def buttonDown(controller: Controller, i: Int): Boolean = {
-          if (i == Xbox.START) {
-            val freePlayer = controllerMap.keys.find((player) => controllerMap(player).isEmpty)
-            println(freePlayer)
-            if (freePlayer.isDefined && playerOption.isEmpty) {
-              controllerMap(freePlayer.get) = Some(controller)
-              playerOption = freePlayer
-            }
-            return false
-          }
-
-          if (playerOption.isDefined) {
-            playerOption.get.handleControllerButtonDown(i)
-          }
-          true
-        }
-
-        override def buttonUp(controller: Controller, i: Int): Boolean = {
-          if (playerOption.isDefined) {
-            playerOption.get.handleControllerButtonUp(i)
-          }
-          false
-        }
-
-        override def axisMoved(controller: Controller, i: Int, v: Float): Boolean = {
-
-          false
-        }
-
-        override def povMoved(controller: Controller, i: Int, povDirection: PovDirection): Boolean = {
-          if (playerOption.isDefined) {
-            playerOption.get.handleControllerPovDirectionChange(povDirection)
-          }
-          false
-        }
-
-        override def xSliderMoved(controller: Controller, i: Int, b: Boolean): Boolean = {
-
-          false
-        }
-
-        override def ySliderMoved(controller: Controller, i: Int, b: Boolean): Boolean = {
-
-          false
-        }
-
-        override def accelerometerMoved(controller: Controller, i: Int, vector3: Vector3): Boolean = false
-      }
-      controller.addListener(controllerListener)
-
-      controllersAndListenersMap(controller) = controllerListener
-    })
+  override def handleControllerPovMoved(game: Game, controller: Controller, povDirection: PovDirection): Unit = {
+    if (game.controllersMap(controller) == game.P1Key) {
+      player1.handleControllerPovDirectionChange(povDirection)
+    } else if (game.controllersMap(controller) == game.P2Key) {
+      player2.handleControllerPovDirectionChange(povDirection)
+    }
   }
 }

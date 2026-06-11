@@ -2,12 +2,14 @@ package ch.hevs.gdx2d.isckombat.state.gameState
 
 import ch.hevs.gdx2d.components.audio.{MusicPlayer, SoundSample}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
+import ch.hevs.gdx2d.desktop.Xbox
 import ch.hevs.gdx2d.isckombat.Game
 import ch.hevs.gdx2d.isckombat.entity.{Player, Scorpion}
 import ch.hevs.gdx2d.isckombat.interface.CharacterSelector
 import ch.hevs.gdx2d.isckombat.utils.GameMath
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.controllers.{Controller, PovDirection}
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 
@@ -172,5 +174,43 @@ class MenuState extends GameState {
     val row = playerSelection.cell(1)
     playerSelection.character = Some(Player.createCharacter(playerSelection.id, characterGrid(row)(col).name))
     characterGrid(row)(col).selectionSound.play()
+  }
+
+  override def handleControllerButtonDown(game: Game, controller: Controller, i: Int): Unit = {
+    if (game.controllersMap(controller) == game.P1Key) {
+      if (i == Xbox.X) {
+        handlePlayersCharacterSelection(Input.Keys.T) // P1 selection key
+      }
+    } else if (game.controllersMap(controller) == game.P2Key) {
+      if (i == Xbox.X) {
+        handlePlayersCharacterSelection(Input.Keys.P)
+      }
+    }
+  }
+
+  override def handleControllerButtonUp(game: Game, controller: Controller, i: Int): Unit = {}
+
+  override def handleControllerPovMoved(game: Game, controller: Controller, povDirection: PovDirection): Unit = {
+    if (game.controllersMap(controller) == game.P1Key) {
+      var navigationKey = 0
+      povDirection match {
+        case PovDirection.north => navigationKey = Input.Keys.W
+        case PovDirection.south => navigationKey = Input.Keys.S
+        case PovDirection.west => navigationKey = Input.Keys.A
+        case PovDirection.east => navigationKey = Input.Keys.D
+        case _ => return
+      }
+      handlePlayersGridNavigation(navigationKey)
+    } else if (game.controllersMap(controller) == game.P2Key) {
+      var navigationKey = 0
+      povDirection match {
+        case PovDirection.north => navigationKey = Input.Keys.UP
+        case PovDirection.south => navigationKey = Input.Keys.DOWN
+        case PovDirection.west => navigationKey = Input.Keys.LEFT
+        case PovDirection.east => navigationKey = Input.Keys.RIGHT
+        case _ => return
+      }
+      handlePlayersGridNavigation(navigationKey)
+    }
   }
 }
